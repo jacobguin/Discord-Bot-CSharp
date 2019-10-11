@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Help.cs" />
+    <Compile Include="Commands\SetPrefix.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Events\Log.cs" />
     <Compile Include="Events\Message Received.cs" />
