@@ -208,6 +208,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Help.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Hidden Info.cs" />
     <Compile Include="Program.cs" />
@@ -218,8 +219,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Comands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
