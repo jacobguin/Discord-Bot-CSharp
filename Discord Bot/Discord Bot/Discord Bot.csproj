@@ -208,7 +208,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code Support\Music\Backend.cs" />
+    <Compile Include="Code Support\Music\Playing.cs" />
+    <Compile Include="Code Support\Music\Queue.cs" />
     <Compile Include="Commands\Help.cs" />
+    <Compile Include="Commands\Music\Play.cs" />
     <Compile Include="Commands\SetPrefix.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Events\Log.cs" />
