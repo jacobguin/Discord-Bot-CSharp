@@ -68,7 +68,7 @@ namespace Discord_Bot.Code_Support.Music
             int count = PeopleInCall(s, v);
             if (count == 0)
             {
-                 Stop(c, s);
+                await Stop(c, s);
             }
         }
 

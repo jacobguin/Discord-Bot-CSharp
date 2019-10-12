@@ -1,7 +1,6 @@
 ﻿using Discord;
 using System;
 using System.Threading.Tasks;
-using Console = Colorful.Console;
 
 namespace Discord_Bot.Events
 {
@@ -14,7 +13,7 @@ namespace Discord_Bot.Events
 
         private static async Task Client_Log(LogMessage Message)
         {
-            Console.WriteLine($"[{DateTime.Now} at {Message.Source}] {Message.Message}", System.Drawing.Color.Gold);
+            Program.MF.AddText($"[{DateTime.Now} at {Message.Source}] {Message.Message}", System.Drawing.Color.Gold);
         }
     }
 }

@@ -36,12 +36,16 @@ namespace Discord_Bot.Code_Support.Music
             {
                 RAW = RAW.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
                 string[] raw = RAW.Split('|');
-                string[] output = new string[raw.Count() -1];
-                Type[] Output = new Type[raw.Count() - 1];
+                string[] output = new string[raw.Count() -2];
+                Type[] Output = new Type[raw.Count() - 2];
                 int current = -1;
                 foreach (string Result in raw)
                 {
                     if (current == -1)
+                    {
+                        current++;
+                    }
+                    else if (current == raw.Count() - 2)
                     {
                         current++;
                     }

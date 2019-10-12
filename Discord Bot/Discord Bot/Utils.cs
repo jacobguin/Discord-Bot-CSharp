@@ -1,11 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Console = Colorful.Console;
 
 namespace Discord_Bot
 {
@@ -27,7 +23,7 @@ namespace Discord_Bot
 
         public static async Task RepotError(SocketCommandContext Context, string Command, Exception Error)
         {
-            Console.WriteLine(Error.Message, System.Drawing.Color.Red);
+            Program.MF.AddText(Error.Message, System.Drawing.Color.Red);
             EmbedBuilder Embed = new EmbedBuilder();
             Embed.WithTitle("Error");
             Embed.WithColor(Color.DarkRed);
