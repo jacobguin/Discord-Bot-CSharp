@@ -10,7 +10,7 @@ namespace Discord_Bot.Commands
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-        [Command("Help"), Summary("Help Command")]
+        [Command("Help"), Summary("Shows a list of commands and gives a summary of them.")]
         public async Task help(params string[] Command)
         {
             string Prefix = Utils.GetPrefix(Context);

@@ -19,7 +19,7 @@ namespace Discord_Bot.Code_Support.Music
             return Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = $"/C youtube-dl.exe --no-check-certificate -f bestaudio -o - {url} | ffmpeg.exe -i pipe:0 -f s16le -ar 48000 -ac 2 pipe:1",
+                Arguments = $"/C Music%20EXE%20Complied/youtube-dl.exe --no-check-certificate -f bestaudio -o - {url} | Music%20EXE%20Complied/ffmpeg.exe -i pipe:0 -f s16le -ar 48000 -ac 2 pipe:1",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
