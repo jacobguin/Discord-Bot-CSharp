@@ -114,6 +114,10 @@ namespace Discord_Bot.Code_Support.Music
             }
             else
             {
+                if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == null)
+                {
+                    Database.Write("Music", "Server_ID", Context.Guild.Id.ToString());
+                }
                 Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{ID}|End|");
             }
         }

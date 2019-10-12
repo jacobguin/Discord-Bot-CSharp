@@ -40,6 +40,7 @@ namespace Discord_Bot.Commands.Music
                         }
                         else
                         {
+                            
                             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                             {
                                 await Playing.StartPlaying(await Channel.ConnectAsync(), Context, Channel);
