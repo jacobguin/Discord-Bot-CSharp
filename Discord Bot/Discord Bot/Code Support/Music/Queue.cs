@@ -12,7 +12,8 @@ namespace Discord_Bot.Code_Support.Music
         public enum Type
         {
             Playlist,
-            Youtube
+            Youtube,
+            End,
         }
 
         public static class Playlist
@@ -35,23 +36,36 @@ namespace Discord_Bot.Code_Support.Music
             {
                 RAW = RAW.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
                 string[] raw = RAW.Split('|');
-                string[] output = null;
-                Type[] Output = null;
-                int current = 0;
+                string[] output = new string[raw.Count() -1];
+                Type[] Output = new Type[raw.Count() - 1];
+                int current = -1;
                 foreach (string Result in raw)
                 {
-                    if (Result.StartsWith("yt"))
+                    if (current == -1)
                     {
-                        output[current] = Result.Replace("yt", "");
-                        Output[current] = Type.Youtube;
                         current++;
                     }
-                    else if (Result.StartsWith("playlist"))
+                    else
                     {
-                        //Will not ocure Yet, this may change in the fucture.
-                        output[current] = Result.Replace("playlist", "");
-                        Output[current] = Type.Playlist;
-                        current++;
+                        if (Result.StartsWith("yt"))
+                        {
+                            output[current] = Result.Replace("yt", "");
+                            Output[current] = Type.Youtube;
+                            current++;
+                        }
+                        else if (Result.StartsWith("playlist"))
+                        {
+                            //Will not ocure Yet, this may change in the fucture.
+                            output[current] = Result.Replace("playlist", "");
+                            Output[current] = Type.Playlist;
+                            current++;
+                        }
+                        else
+                        {
+                            output[current] = null;
+                            Output[current] = Type.End;
+                            current++;
+                        }
                     }
                 }
                 Out = Output;
@@ -65,6 +79,43 @@ namespace Discord_Bot.Code_Support.Music
             string Output = List(Context, out temp)[0];
             Out = temp[0];
             return Output;
+        }
+
+        public static async Task RemoveFirst(SocketCommandContext Context)
+        {
+            Type type;
+            string remove = FirstInQueue(Context, out type);
+            if (type == Type.Youtube)
+            {
+                Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue").Remove(0, 14));
+            }
+            else if (type == Type.Playlist)
+            {
+                //not here yet
+            }
+            else
+            {
+                await Clear(Context);
+            }
+        }
+
+        public static async Task Clear(SocketCommandContext Context)
+        {
+            await Context.Channel.SendMessageAsync("I am done playing music");
+            Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), "");
+        }
+
+        public static async Task AddSongToQueue(SocketCommandContext Context, string ID)
+        {
+            string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+            if (!string.IsNullOrEmpty(old))
+            {
+                Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{ID}|End|");
+            }
+            else
+            {
+                Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{ID}|End|");
+            }
         }
     }
 }

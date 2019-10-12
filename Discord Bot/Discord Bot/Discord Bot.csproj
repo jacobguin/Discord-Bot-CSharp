@@ -220,6 +220,7 @@
     <Compile Include="Events\Message Received.cs" />
     <Compile Include="Events\Ready.cs" />
     <Compile Include="Hidden Info.cs" />
+    <Compile Include="json.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
@@ -235,13 +236,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Music EXE Complied\ffmpeg.exe">
+    <Content Include="ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Music EXE Complied\ffplay.exe">
+    <Content Include="ffplay.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Music EXE Complied\ffprobe.exe">
+    <Content Include="ffprobe.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="libsodium.dll">
@@ -250,7 +251,7 @@
     <Content Include="opus.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Music EXE Complied\youtube-dl.exe">
+    <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
