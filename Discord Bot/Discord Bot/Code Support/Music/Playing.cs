@@ -3,7 +3,10 @@ using Discord.Audio;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Code_Support.Music
@@ -27,7 +30,10 @@ namespace Discord_Bot.Code_Support.Music
                 {
                     try
                     {
-                        string Content = Queue.FirstInQueue(Context, out Queue.Type VideoType);
+
+
+                        Queue.Type VideoType;
+                        string Content = Queue.FirstInQueue(Context, out VideoType);
                         if (VideoType == Queue.Type.End)
                         {
                             await Queue.Clear(Context);
@@ -41,7 +47,7 @@ namespace Discord_Bot.Code_Support.Music
                         }
                         else if (VideoType == Queue.Type.Playlist)
                         {
-                            // wip
+                            //not here yet
                         }
                     }
                     catch (Exception ex)
@@ -57,9 +63,13 @@ namespace Discord_Bot.Code_Support.Music
             await Stop(Client, Context);
         }
 
-        private static async Task Client_UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+        private async static Task Client_UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
         {
-            if (PeopleInCall(s, v) == 0) await Stop(c, s);
+            int count = PeopleInCall(s, v);
+            if (count == 0)
+            {
+                await Stop(c, s);
+            }
         }
 
         private static async Task Stop(IAudioClient Client, SocketCommandContext Context)
@@ -72,17 +82,17 @@ namespace Discord_Bot.Code_Support.Music
         {
             EmbedBuilder e = new EmbedBuilder();
             WebClient web = new WebClient();
-            string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ID}&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube));
-            e.Title = "Now Playing: " + '"' + Json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + Json.Parse(text, "items[0].snippet.channelTitle");
-            e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"))
-             .WithColor(255, 0, 0)
-             .WithFooter($"https://www.youtube.com/watch?v={ID}");
+            string text = web.DownloadString("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + ID + "&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube));
+            e.Title = "Now Playing: " + '"' + json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + json.Parse(text, "items[0].snippet.channelTitle");
+            e.WithThumbnailUrl(json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
+            e.WithColor(255, 0, 0);
+            e.WithFooter($"https://www.youtube.com/watch?v={ID}");
             return e.Build();
         }
 
         private static int PeopleInCall(SocketCommandContext Context, IVoiceChannel Channel)
         {
-            return Context.Client.GetChannel(Channel.Id).Users.Count - 1;
+            return Context.Client.GetGuild(Context.Guild.Id).GetVoiceChannel(Channel.Id).Users.Count - 1;
         }
     }
 }

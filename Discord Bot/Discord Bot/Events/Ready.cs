@@ -12,7 +12,7 @@ namespace Discord_Bot.Events
 
         private async static Task Client_Ready()
         {
-            await Program.Client.SetGameAsync($"{Program.Client.Guilds.Count.ToString()} Servers", null, ActivityType.Watching);
+            await Program.Client.SetGameAsync(Program.Client.Guilds.Count.ToString() + " Servers", null, ActivityType.Watching);
         }
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Discord.Audio;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Code_Support.Music
@@ -10,7 +14,7 @@ namespace Discord_Bot.Code_Support.Music
         private static AudioOutStream discord;
         private static Stream output;
 
-        private static Process YTStream(string url)
+        private static Process YTStreame(string url)
         {
             return Process.Start(new ProcessStartInfo
             {
@@ -24,7 +28,7 @@ namespace Discord_Bot.Code_Support.Music
 
         public static async Task SendUrlAsync(IAudioClient client, string url)
         {
-            using (Process ffmpeg = YTStream(url))
+            using (Process ffmpeg = YTStreame(url))
             {
                 output = ffmpeg.StandardOutput.BaseStream;
                 discord = client.CreatePCMStream(AudioApplication.Mixed);

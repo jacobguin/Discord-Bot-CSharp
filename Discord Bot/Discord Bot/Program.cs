@@ -13,7 +13,7 @@ using Console = Colorful.Console;
 
 namespace Discord_Bot
 {
-    class Program
+    public static class Program
     {
         public static DiscordSocketClient Client;
         public static CommandService Commands;
