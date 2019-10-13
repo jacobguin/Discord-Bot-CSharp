@@ -1,9 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Events
@@ -15,9 +12,9 @@ namespace Discord_Bot.Events
             Program.Client.MessageReceived += Client_MessageReceived;
         }
 
-        private async static Task Client_MessageReceived(SocketMessage MessagePram)
+        private async static Task Client_MessageReceived(SocketMessage message)
         {
-            SocketUserMessage Message = MessagePram as SocketUserMessage;
+            SocketUserMessage Message = message as SocketUserMessage;
             SocketCommandContext Context = new SocketCommandContext(Program.Client, Message);
 
             if (Context.Message == null || Context.Message.Content == "") return;
@@ -33,13 +30,9 @@ namespace Discord_Bot.Events
 
             if (!Result.IsSuccess)
             {
-                Console.WriteLine($"{DateTime.Now} at Commands] Something went wrong with a command  Text: {Context.Message.Content} | Error: {Result.ErrorReason}", System.Drawing.Color.DarkRed);
-                string ERROR = Result.ErrorReason;
-                if (ERROR == "Unknown command.")
-                {
-                    ERROR = $"Unknown Command! Use {Prefix}Help to see the commands.";
-                }
-                await Context.Channel.SendMessageAsync(ERROR);
+                Console.WriteLine($"{DateTime.Now} at Commands] Something went wrong with a command. Message: {Context.Message.Content} | Error: {Result.ErrorReason}", System.Drawing.Color.DarkRed);
+                string err = Result.ErrorReason;
+                await Context.Channel.SendMessageAsync(err == "Unknown command." ? $"Unknown Command! Use {Prefix}Help to see the commands." : err);
             }
         }
     }

@@ -1,8 +1,4 @@
 ﻿using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Commands
@@ -14,7 +10,7 @@ namespace Discord_Bot.Commands
         {
             if (prefix.Length > 1)
             {
-                await Context.Channel.SendMessageAsync("That is not a valid prefix!");
+                await Context.Channel.SendMessageAsync("The prefix cannot have a space in it!");
             }
             else if (prefix.Length < 1)
             {
@@ -24,12 +20,12 @@ namespace Discord_Bot.Commands
             {
                 if (prefix[0].Length != 1)
                 {
-                    await Context.Channel.SendMessageAsync("That is not a valid prefix!");
+                    await Context.Channel.SendMessageAsync("The prefix can only be one character long!");
                 }
                 else
                 {
                     Database.Update("Users", "Prefix", "ID", $"{Context.User.Id}{Context.Guild.Id}", prefix[0]);
-                    await Context.Channel.SendMessageAsync($"your prefix is now '{prefix[0]}'");
+                    await Context.Channel.SendMessageAsync($"Your prefix is now `{prefix[0]}`");
                 }
             }
         }

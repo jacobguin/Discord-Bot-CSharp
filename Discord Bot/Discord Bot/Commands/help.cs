@@ -1,9 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Commands
@@ -17,18 +13,20 @@ namespace Discord_Bot.Commands
             if (Command.Length == 0)
             {
 
-                EmbedBuilder Embed = new EmbedBuilder();
-                Embed.Title = "Jacob Bot Commands";
+                EmbedBuilder Embed = new EmbedBuilder
+                {
+                    Title = "Jacob Bot Commands"
+                };
 
                 string DEC = "```markdown\n";
 
                 foreach (CommandInfo Info in Program.Commands.Commands)
                 {
-                    DEC = DEC + "- " + Prefix + Info.Name + "\n";
+                    DEC += $"- {Prefix}{Info.Name}\n";
                 }
 
                 Embed.WithDescription($"{DEC}```");
-                Embed.WithFooter("These are all the commands for the bot");
+                Embed.WithFooter("Bot Command List");
 
                 await Context.Channel.SendMessageAsync("", false, Embed.Build());
             }
@@ -36,15 +34,8 @@ namespace Discord_Bot.Commands
             {
                 foreach (CommandInfo Info in Program.Commands.Commands)
                 {
-                    if (Command[0].ToLower() == Info.Name.ToLower())
-                    {
-                        await Context.Channel.SendMessageAsync(Info.Summary);
-                    }
+                    if (Command[0].ToLower() == Info.Name.ToLower()) await Context.Channel.SendMessageAsync(Info.Summary);
                 }
-            }
-            else
-            {
-                //IDK what to do here
             }
         }
     }

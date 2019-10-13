@@ -1,28 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.OleDb;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Discord_Bot
 {
     public static class Database
     {
-        private static string FilePath = "C:/Users/techn/Documents/Bot.accdb";
-        private static string Con = $@"Provider = Microsoft.ACE.OLEDB.12.0; Data Source = {FilePath}";
+        private static readonly string FilePath = "C:/Users/techn/Documents/Bot.accdb";
+        private static readonly string Con = $@"Provider = Microsoft.ACE.OLEDB.12.0; Data Source = {FilePath}";
 
         public static string Read(string Table, string WhereColumn, string KeyInColumn, string Return)
         {
             string Out = null;
 
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand Command = new OleDbCommand
             {
                 Connection = Connection,
-                CommandText = $"SELECT * FROM [{Table}] WHERE [{WhereColumn}] = '" + KeyInColumn + "'"
+                CommandText = $"SELECT * FROM [{Table}] WHERE [{WhereColumn}] = '{KeyInColumn}'"
             };
             OleDbDataReader Reader = Command.ExecuteReader();
             while (Reader.Read())
@@ -45,8 +43,10 @@ namespace Discord_Bot
         {
             int Out = 0;
 
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand Command = new OleDbCommand
             {
@@ -75,8 +75,10 @@ namespace Discord_Bot
         {
             string Out = null;
 
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {
@@ -102,8 +104,10 @@ namespace Discord_Bot
 
         public static void Write(string Table, string Column, string Input)
         {
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand Command = new OleDbCommand
             {
@@ -116,8 +120,10 @@ namespace Discord_Bot
 
         public static void Write(string Command)
         {
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {
@@ -130,8 +136,10 @@ namespace Discord_Bot
 
         public static void Update(string Table, string EditColumn, string WhereColumn, string KeyInColumn, string New)
         {
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand Command = new OleDbCommand
             {
@@ -144,8 +152,10 @@ namespace Discord_Bot
 
         public static void Remove(string Table, string WhereColumn, string KeyInColumn)
         {
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand Command = new OleDbCommand
             {
@@ -159,15 +169,7 @@ namespace Discord_Bot
         public static void Update(string Table, string EditColumn, string WhereColumn, string KeyInColumn, bool IsChecked)
         {
             OleDbConnection Connection = new OleDbConnection();
-            string Checked = null;
-            if (IsChecked == true)
-            {
-                Checked = "1";
-            }
-            else
-            {
-                Checked = "0";
-            }
+            string Checked = IsChecked == true ? "1" : "0";
 
             Connection.ConnectionString = Con;
             Connection.OpenAsync();
@@ -182,8 +184,10 @@ namespace Discord_Bot
 
         public static void Update(string Command)
         {
-            OleDbConnection Connection = new OleDbConnection();
-            Connection.ConnectionString = Con;
+            OleDbConnection Connection = new OleDbConnection
+            {
+                ConnectionString = Con
+            };
             Connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {

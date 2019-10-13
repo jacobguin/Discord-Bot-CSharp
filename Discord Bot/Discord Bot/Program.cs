@@ -2,13 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Console = Colorful.Console;
 
 namespace Discord_Bot
 {
@@ -17,7 +12,7 @@ namespace Discord_Bot
         public static DiscordSocketClient Client;
         public static CommandService Commands;
 
-        static void Main(string[] args)
+        static void Main()
         {
             new Program().BOT().GetAwaiter().GetResult();
         }
