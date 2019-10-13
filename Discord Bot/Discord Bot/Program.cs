@@ -12,9 +12,10 @@ namespace Discord_Bot
         public static DiscordSocketClient Client;
         public static CommandService Commands;
 
-        static void Main()
+        static void Main(string[] args)
         {
             new Program().BOT().GetAwaiter().GetResult();
+            System.Console.ReadKey();
         }
 
         public async Task BOT()

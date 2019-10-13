@@ -35,7 +35,7 @@ namespace Discord_Bot.Code_Support.Music
                 string[] raw = RAW.Split('|');
                 string[] output = new string[raw.Count() - 1];
                 Type[] Output = new Type[raw.Count() - 1];
-                for (int i = 0; i < raw.Length; i++)
+                for (int i = -1; i < raw.Length - 1; i++)
                 {
                     string Result = raw[i];
                     if (Result.StartsWith("yt"))
@@ -49,7 +49,7 @@ namespace Discord_Bot.Code_Support.Music
                         output[i] = Result.Replace("playlist", "");
                         Output[i] = Type.Playlist;
                     }
-                    else
+                    else if (i != -1)
                     {
                         output[i] = null;
                         Output[i] = Type.End;
