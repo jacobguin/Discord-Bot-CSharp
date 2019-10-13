@@ -2,8 +2,14 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Events;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Threading.Tasks;
+using Console = Colorful.Console;
 
 namespace Discord_Bot
 {
@@ -11,31 +17,14 @@ namespace Discord_Bot
     {
         public static DiscordSocketClient Client;
         public static CommandService Commands;
+        public static MainForm MF;
 
-        static void Main(string[] args)
+        [STAThread]
+        static void Main()
         {
-            new Program().BOT().GetAwaiter().GetResult();
-            System.Console.ReadKey();
-        }
-
-        public async Task BOT()
-        {
-            Client = new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug });
-            Commands = new CommandService(new CommandServiceConfig
-            {
-                CaseSensitiveCommands = false,
-                DefaultRunMode = RunMode.Async,
-                LogLevel = LogSeverity.Debug,
-            });
-
-            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);
-            Message_Received.Load();
-            Ready.Load();
-            Log.Load();
-
-            await Client.LoginAsync(TokenType.Bot, Hidden_Info.Tokens.Bot);
-            await Client.StartAsync();
-            await Task.Delay(-1);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Load());
         }
     }
 }
