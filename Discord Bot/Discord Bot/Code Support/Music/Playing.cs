@@ -30,22 +30,19 @@ namespace Discord_Bot.Code_Support.Music
                 {
                     try
                     {
-
-
-                        Queue.Type VideoType;
-                        string Content = Queue.FirstInQueue(Context, out VideoType);
-                        if (VideoType == Queue.Type.End)
+                        Queue.Queue_Item Content = Queue.FirstInQueue(Context);
+                        if (Content.Type == Queue.Type.End)
                         {
                             await Queue.Clear(Context);
                             await Stop(Client, Context);
                             break;
                         }
-                        else if (VideoType == Queue.Type.Youtube)
+                        else if (Content.Type == Queue.Type.Youtube)
                         {
-                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Content.Replace("https://www.youtube.com/watch?v=", "")));
-                            await Backend.SendUrlAsync(Client, Content);
+                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Content.Video.Replace("https://www.youtube.com/watch?v=", "")));
+                            await Backend.SendUrlAsync(Client, Content.Video);
                         }
-                        else if (VideoType == Queue.Type.Playlist)
+                        else if (Content.Type == Queue.Type.Playlist)
                         {
                             //not here yet
                         }

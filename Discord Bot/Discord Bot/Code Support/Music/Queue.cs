@@ -24,20 +24,18 @@ namespace Discord_Bot.Code_Support.Music
             }
         }
 
-        public static string[] List(SocketCommandContext Context, out Type[] Out)
+        public static Queue_Item[] List(SocketCommandContext Context)
         {
             string RAW = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
             if (string.IsNullOrEmpty(RAW))
             {
-                Out = null;
                 return null;
             }
             else
             {
                 RAW = RAW.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
                 string[] raw = RAW.Split('|');
-                string[] output = new string[raw.Count() -2];
-                Type[] Output = new Type[raw.Count() - 2];
+                Queue_Item[] Output = new Queue_Item[raw.Count() - 2];
                 int current = -1;
                 foreach (string Result in raw)
                 {
@@ -53,47 +51,39 @@ namespace Discord_Bot.Code_Support.Music
                     {
                         if (Result.StartsWith("yt"))
                         {
-                            output[current] = Result.Replace("yt", "");
-                            Output[current] = Type.Youtube;
+                            Output[current] = new Queue_Item(Type.Youtube, Result.Replace("yt", ""));
                             current++;
                         }
                         else if (Result.StartsWith("playlist"))
                         {
                             //Will not ocure Yet, this may change in the fucture.
-                            output[current] = Result.Replace("playlist", "");
-                            Output[current] = Type.Playlist;
+                            Output[current] = new Queue_Item(Type.Playlist, Result.Replace("playlist", ""));
                             current++;
                         }
                         else
                         {
-                            output[current] = null;
-                            Output[current] = Type.End;
+                            Output[current] = new Queue_Item(Type.End, null);
                             current++;
                         }
                     }
                 }
-                Out = Output;
-                return output;
+                return Output;
             }
         }
 
-        public static string FirstInQueue(SocketCommandContext Context, out Type Out)
+        public static Queue_Item FirstInQueue(SocketCommandContext Context)
         {
-            Type[] temp = null;
-            string Output = List(Context, out temp)[0];
-            Out = temp[0];
-            return Output;
+            return List(Context)[0];
         }
 
         public static async Task RemoveFirst(SocketCommandContext Context)
         {
-            Type type;
-            string remove = FirstInQueue(Context, out type);
-            if (type == Type.Youtube)
+            Queue_Item remove = FirstInQueue(Context);
+            if (remove.Type == Type.Youtube)
             {
                 Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue").Remove(0, 14));
             }
-            else if (type == Type.Playlist)
+            else if (remove.Type == Type.Playlist)
             {
                 //not here yet
             }
@@ -101,6 +91,19 @@ namespace Discord_Bot.Code_Support.Music
             {
                 await Clear(Context);
             }
+        }
+
+        public class Queue_Item
+        {
+            public Queue_Item(Type type, string Result)
+            {
+                Type = type;
+                Video = Result;
+            }
+
+            public Type Type { get; }
+
+            public string Video { get; }
         }
 
         public static async Task Clear(SocketCommandContext Context)
