@@ -42,7 +42,8 @@ namespace Discord_Bot.Commands.Music
                             
                             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                             {
-                                await Playing.StartPlaying(await Channel.ConnectAsync(), Context, Channel);
+                                Queue Q = new Queue(Context);
+                                await Playing.StartPlaying(await Channel.ConnectAsync(), Context, Channel, Q);
                             }
                             else
                             {
@@ -198,11 +199,12 @@ namespace Discord_Bot.Commands.Music
         }
         private async Task Start(string id)
         {
-            await Queue.AddSongToQueue(Context, id);
+            Queue Q = new Queue(Context);
+            Q.Add(Queue.Type.Youtube, id, Context);
             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
             {
                 IAudioClient AudioClient = await Channel.ConnectAsync();
-                Playing.StartPlaying(AudioClient, Context, Channel);
+                Playing.StartPlaying(AudioClient, Context, Channel, Q);
             }
             else
             {

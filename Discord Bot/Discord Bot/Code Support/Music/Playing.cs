@@ -17,32 +17,33 @@ namespace Discord_Bot.Code_Support.Music
         private static IVoiceChannel v;
         private static SocketCommandContext s;
 
-        public static async Task StartPlaying(IAudioClient Client, SocketCommandContext Context, IVoiceChannel Channel)
+        public static async Task StartPlaying(IAudioClient Client, SocketCommandContext Context, IVoiceChannel Channel, Queue Q)
         {
             Database.Update("Music", "Playing", "Server_ID", Context.Guild.Id.ToString(), true);
             v = Channel;
             s = Context;
             c = Client;
             Program.Client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
+            Program.Client.LoggedOut += Client_LoggedOut;
             while (true)
             {
+                Q.Refresh();
                 try
                 {
                     try
                     {
-                        Queue.Queue_Item Content = Queue.FirstInQueue(Context);
-                        if (Content.Type == Queue.Type.End)
+                        if (Q.Items[0].Type == Queue.Type.End)
                         {
-                            await Queue.Clear(Context);
+                            Q.Clear();
                             await Stop(Client, Context);
                             break;
                         }
-                        else if (Content.Type == Queue.Type.Youtube)
+                        else if (Q.Items[0].Type == Queue.Type.Youtube)
                         {
-                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Content.YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
-                            await Backend.SendUrlAsync(Client, Content.YtVideo.ID);
+                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Q.Items[0].YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
+                            await Backend.SendUrlAsync(Client, Q.Items[0].YtVideo.ID);
                         }
-                        else if (Content.Type == Queue.Type.Playlist)
+                        else if (Q.Items[0].Type == Queue.Type.Playlist)
                         {
                             //not here yet
                         }
@@ -54,10 +55,15 @@ namespace Discord_Bot.Code_Support.Music
                 }
                 finally
                 {
-                    await Queue.RemoveFirst(Context);
+                    Q.Items[0].Remove();
                 }
             }
             await Stop(Client, Context);
+        }
+
+        private async static Task Client_LoggedOut()
+        {
+            await Stop(c, s);
         }
 
         private async static Task Client_UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)

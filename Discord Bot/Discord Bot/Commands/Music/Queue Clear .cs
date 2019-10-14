@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using Discord_Bot.Code_Support.Music;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Commands.Music
@@ -11,7 +12,8 @@ namespace Discord_Bot.Commands.Music
         {
             if (args.Length == 0)
             {
-                await Code_Support.Music.Queue.Clear(Context);
+                Queue Q = new Queue(Context);
+                Q.Clear();
                 await Context.Channel.SendMessageAsync("I have cleared the queue.");
             }
             else if (args.Length == 1)
