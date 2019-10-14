@@ -89,7 +89,7 @@ namespace Discord_Bot.Code_Support.Music
                     string old = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
                     if (old.Contains("|yt|"))
                     {
-                        Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), old.Remove(0, 14));
+                        Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), old.Replace($"|yt|{YtVideo.ID}", ""));
                     }
                 }
                 else if (Type == Type.Playlist)
@@ -126,48 +126,28 @@ namespace Discord_Bot.Code_Support.Music
         public void Clear()
         {
             Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), "");
+            Items = null;
         }
 
-        public void Add(Type type, string input, SocketCommandContext Context)
+        public void Add(Type type, string input)
         {
             if (type == Type.Youtube)
             {
-                string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+                string old = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
                 if (!string.IsNullOrEmpty(old))
                 {
-                    Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{input}|End|");
+                    Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{input}|End|");
                 }
                 else
                 {
-                    if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == null)
+                    if (Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Playing") == null)
                     {
-                        Database.Write("Music", "Server_ID", Context.Guild.Id.ToString());
+                        Database.Write("Music", "Server_ID", context.Guild.Id.ToString());
                     }
-                    Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{input}|End|");
+                    Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), $"|yt|{input}|End|");
                 }
             }
-            Queue_Item[] old_items = Items;
-            Queue_Item[] new_items;
-            if (old_items != null)
-            {
-                new_items = new Queue_Item[old_items.Length];
-                for (int i = 0; i < old_items.Length; i++)
-                {
-                    if (i != old_items.Length - 1)
-                    {
-                        new_items[i] = old_items[i];
-                    }
-                    else
-                    {
-                        new_items[i] = new Queue_Item(type, input, Context);
-                    }
-                }
-            } else
-            {
-                new_items = new Queue_Item[1];
-                new_items[0] = new Queue_Item(type, input, Context);
-            }
-            Items = new_items;
+            Refresh();
         }
 
         public void Refresh()

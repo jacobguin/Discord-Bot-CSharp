@@ -202,7 +202,7 @@ namespace Discord_Bot.Commands.Music
             try
             {
                 Queue Q = new Queue(Context);
-                Q.Add(Queue.Type.Youtube, id, Context);
+                Q.Add(Queue.Type.Youtube, id);
                 if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                 {
                     IAudioClient AudioClient = await Channel.ConnectAsync();
