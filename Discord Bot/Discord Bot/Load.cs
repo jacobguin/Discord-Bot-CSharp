@@ -3,13 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Events;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,7 +25,7 @@ namespace Discord_Bot
 
         public async Task BOT()
         {
-            
+
             Program.Client = new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug });
             Program.Commands = new CommandService(new CommandServiceConfig
             {
@@ -52,7 +46,7 @@ namespace Discord_Bot
 
         private void Load_Shown(object sender, EventArgs e)
         {
-            this.Hide();
+            Hide();
         }
     }
 }

@@ -1,17 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Discord_Bot.Events;
-using MetroFramework.Forms;
+﻿using MetroFramework.Forms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Discord_Bot
@@ -31,13 +19,13 @@ namespace Discord_Bot
             richTextBox1.AppendText(Text + Environment.NewLine);
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.ScrollToCaret();
         }
 
-        private async void MainForm_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             await Program.Client.LogoutAsync();
             Application.Exit();

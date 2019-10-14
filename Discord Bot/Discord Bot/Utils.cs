@@ -29,7 +29,7 @@ namespace Discord_Bot
             Embed.WithColor(Color.DarkRed);
             Embed.WithDescription(Error.Message);
             Embed.WithFooter($"Error with the Command: {Command}");
-            await Context.Client.GetGuild(543962547217498150).GetTextChannel(544837859362996274).SendMessageAsync("", false, Embed.Build());
+            await (Context.Client.GetChannel(544837859362996274) as ITextChannel).SendMessageAsync("", false, Embed.Build());
         }
     }
 }

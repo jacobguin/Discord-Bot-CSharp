@@ -6,7 +6,7 @@ using System.Web.UI;
 
 namespace Discord_Bot
 {
-    public static class json
+    public static class Json
     {
         public static string Parse(string JSON, string Parse)
         {
