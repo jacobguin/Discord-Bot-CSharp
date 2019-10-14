@@ -21,14 +21,14 @@ namespace Discord_Bot
             }
         }
 
-        public static async Task RepotError(SocketCommandContext Context, string Command, Exception Error)
+        public static async Task ReportError(SocketCommandContext Context, string Command, Exception Error)
         {
             Program.MF.AddText(Error.Message, System.Drawing.Color.Red);
-            EmbedBuilder Embed = new EmbedBuilder();
-            Embed.WithTitle("Error");
-            Embed.WithColor(Color.DarkRed);
-            Embed.WithDescription(Error.Message);
-            Embed.WithFooter($"Error with the Command: {Command}");
+            EmbedBuilder Embed = new EmbedBuilder()
+             .WithTitle("Error")
+             .WithColor(Color.DarkRed)
+             .WithDescription(Error.Message)
+             .WithFooter($"Error with the Command: {Command}");
             await (Context.Client.GetChannel(544837859362996274) as ITextChannel).SendMessageAsync("", false, Embed.Build());
         }
     }

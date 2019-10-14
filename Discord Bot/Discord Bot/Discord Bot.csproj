@@ -52,6 +52,9 @@
     <Reference Include="Discord.Net.WebSocket, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.WebSocket.2.1.1\lib\net46\Discord.Net.WebSocket.dll</HintPath>
     </Reference>
+    <Reference Include="FileTransferProtocalLibrary">
+      <HintPath>..\..\..\..\..\Documents\FileTransferProtocalLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
     </Reference>

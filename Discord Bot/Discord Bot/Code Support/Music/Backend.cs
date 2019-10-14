@@ -10,7 +10,7 @@ namespace Discord_Bot.Code_Support.Music
         private static AudioOutStream discord;
         private static Stream output;
 
-        private static Process YTStreame(string url)
+        private static Process YTStream(string url)
         {
             return Process.Start(new ProcessStartInfo
             {
@@ -24,7 +24,7 @@ namespace Discord_Bot.Code_Support.Music
 
         public static async Task SendUrlAsync(IAudioClient client, string url)
         {
-            using (Process ffmpeg = YTStreame(url))
+            using (Process ffmpeg = YTStream(url))
             {
                 output = ffmpeg.StandardOutput.BaseStream;
                 discord = client.CreatePCMStream(AudioApplication.Mixed);

@@ -2,7 +2,9 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Events;
+using FileTransferProtocalLibrary;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +20,11 @@ namespace Discord_Bot
 
         private async void Load_Load(object sender, EventArgs e)
         {
+            string path = $"C:/Users/{Environment.UserName}/Documents/Bot.accdb";
+            FTP ftp = new FTP($"ftp://{Hidden_Info.Ftp.Domain}/Jacob/Program%20Files/Bot/", Hidden_Info.Ftp.Username, Hidden_Info.Ftp.Password);
+            File.Delete(path);
+            ftp.DownloadFile("Bot.accdb", path);
+
             Program.MF = new MainForm();
             Program.MF.Show();
             new Load().BOT();

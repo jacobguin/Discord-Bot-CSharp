@@ -36,23 +36,20 @@ namespace Discord_Bot.Code_Support.Music
 
                 for (int i = -1; i < raw.Count() - 2; i++)
                 {
-                    if (i != -1)
+                    if (i != -1 && i != raw.Count() - 2)
                     {
-                        if (i != raw.Count() - 2)
+                        if (raw[i + 1].StartsWith("yt"))
                         {
-                            if (raw[i + 1].StartsWith("yt"))
-                            {
-                                Output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""));
-                            }
-                            else if (raw[i + 1].StartsWith("playlist"))
-                            {
-                                //Will not ocure Yet, this may change in the fucture.
-                                Output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""));
-                            }
-                            else
-                            {
-                                Output[i] = new Queue_Item(Type.End, null);
-                            }
+                            Output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""));
+                        }
+                        else if (raw[i + 1].StartsWith("playlist"))
+                        {
+                            // Will not occur yet, this may change in the future.
+                            Output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""));
+                        }
+                        else
+                        {
+                            Output[i] = new Queue_Item(Type.End, null);
                         }
                     }
                 }
@@ -121,7 +118,6 @@ namespace Discord_Bot.Code_Support.Music
 
         public static async Task Clear(SocketCommandContext Context)
         {
-            await Context.Channel.SendMessageAsync("I am done playing music");
             Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), "");
         }
 

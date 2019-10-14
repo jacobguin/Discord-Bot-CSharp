@@ -30,6 +30,7 @@ namespace Discord_Bot.Code_Support.Music
                         Queue.Queue_Item Content = Queue.FirstInQueue(Context);
                         if (Content.Type == Queue.Type.End)
                         {
+                            await Context.Channel.SendMessageAsync("I am done playing music");
                             await Queue.Clear(Context);
                             await Stop(Client, Context);
                             break;
@@ -46,7 +47,7 @@ namespace Discord_Bot.Code_Support.Music
                     }
                     catch (Exception ex)
                     {
-                        await Utils.RepotError(Context, "Play", ex);
+                        await Utils.ReportError(Context, "Play", ex);
                     }
                 }
                 finally

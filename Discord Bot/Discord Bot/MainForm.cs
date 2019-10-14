@@ -1,4 +1,5 @@
-﻿using MetroFramework.Forms;
+﻿using FileTransferProtocalLibrary;
+using MetroFramework.Forms;
 using System;
 using System.Windows.Forms;
 
@@ -27,6 +28,10 @@ namespace Discord_Bot
 
         private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            FTP ftp = new FTP($"ftp://{Hidden_Info.Ftp.Domain}/Jacob/Program%20Files/Bot/", Hidden_Info.Ftp.Username, Hidden_Info.Ftp.Password);
+            ftp.DeleteFile("Bot.accdb");
+            ftp.UploadFile("Bot.accdb", $"C:/Users/{Environment.UserName}/Documents/Bot.accdb");
+
             await Program.Client.LogoutAsync();
             Application.Exit();
         }

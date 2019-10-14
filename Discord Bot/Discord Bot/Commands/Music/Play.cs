@@ -140,7 +140,7 @@ namespace Discord_Bot.Commands.Music
             }
             catch (Exception ex)
             {
-                await Utils.RepotError(Context, "Play", ex);
+                await Utils.ReportError(Context, "Play", ex);
             }
         }
 
