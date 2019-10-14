@@ -90,12 +90,36 @@ namespace Discord_Bot.Code_Support.Music
             public Queue_Item(Type type, string Result)
             {
                 Type = type;
-                Video = Result;
+                if (Type == Type.Youtube)
+                {
+                    YtVideo = new YtVideo(Result);
+                }
+                else
+                {
+                    //wip
+                }
             }
 
             public Type Type { get; }
 
-            public string Video { get; }
+            public YtVideo YtVideo { get; }
+
+            public QueuePlaylist Playlist { get; }
+        }
+
+        public class QueuePlaylist
+        {
+            public ulong Author { get; }
+            public string Title { get; }
+        }
+
+        public class YtVideo
+        {
+            public YtVideo(string Id)
+            {
+                ID = Id;
+            }
+            public string ID { get; }
         }
 
         public static async Task Clear(SocketCommandContext Context)

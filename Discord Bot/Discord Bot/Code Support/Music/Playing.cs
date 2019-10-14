@@ -39,8 +39,8 @@ namespace Discord_Bot.Code_Support.Music
                         }
                         else if (Content.Type == Queue.Type.Youtube)
                         {
-                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Content.Video.Replace("https://www.youtube.com/watch?v=", "")));
-                            await Backend.SendUrlAsync(Client, Content.Video);
+                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Content.YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
+                            await Backend.SendUrlAsync(Client, Content.YtVideo.ID);
                         }
                         else if (Content.Type == Queue.Type.Playlist)
                         {
