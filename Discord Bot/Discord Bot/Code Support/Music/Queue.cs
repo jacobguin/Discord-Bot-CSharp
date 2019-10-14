@@ -36,34 +36,26 @@ namespace Discord_Bot.Code_Support.Music
                 RAW = RAW.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
                 string[] raw = RAW.Split('|');
                 Queue_Item[] Output = new Queue_Item[raw.Count() - 2];
-                int current = -1;
-                foreach (string Result in raw)
+
+                for (int i = -1; i < raw.Count() - 2; i++)
                 {
-                    if (current == -1)
+                    if (i != -1)
                     {
-                        current++;
-                    }
-                    else if (current == raw.Count() - 2)
-                    {
-                        current++;
-                    }
-                    else
-                    {
-                        if (Result.StartsWith("yt"))
+                        if (i != raw.Count() - 2)
                         {
-                            Output[current] = new Queue_Item(Type.Youtube, Result.Replace("yt", ""));
-                            current++;
-                        }
-                        else if (Result.StartsWith("playlist"))
-                        {
-                            //Will not ocure Yet, this may change in the fucture.
-                            Output[current] = new Queue_Item(Type.Playlist, Result.Replace("playlist", ""));
-                            current++;
-                        }
-                        else
-                        {
-                            Output[current] = new Queue_Item(Type.End, null);
-                            current++;
+                            if (raw[i + 1].StartsWith("yt"))
+                            {
+                                Output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""));
+                            }
+                            else if (raw[i + 1].StartsWith("playlist"))
+                            {
+                                //Will not ocure Yet, this may change in the fucture.
+                                Output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""));
+                            }
+                            else
+                            {
+                                Output[i] = new Queue_Item(Type.End, null);
+                            }
                         }
                     }
                 }
