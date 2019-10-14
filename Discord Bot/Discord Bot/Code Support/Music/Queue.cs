@@ -6,7 +6,7 @@ namespace Discord_Bot.Code_Support.Music
 {
     public static class Queue
     {
-        public enum Type
+ /*       public enum Type
         {
             Playlist,
             Youtube,
@@ -136,6 +136,6 @@ namespace Discord_Bot.Code_Support.Music
                 }
                 Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{ID}|End|");
             }
-        }
+        }*/
     }
 }
