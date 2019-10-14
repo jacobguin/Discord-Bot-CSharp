@@ -83,7 +83,7 @@ namespace Discord_Bot.Code_Support.Music
         {
             EmbedBuilder e = new EmbedBuilder();
             WebClient web = new WebClient();
-            string text = web.DownloadString("https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ID}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube});
+            string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ID}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
             e.Title = "Now Playing: " + '"' + Json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + Json.Parse(text, "items[0].snippet.channelTitle");
             e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
             e.WithColor(255, 0, 0);

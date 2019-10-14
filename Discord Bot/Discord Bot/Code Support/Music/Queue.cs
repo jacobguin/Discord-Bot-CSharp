@@ -147,18 +147,27 @@ namespace Discord_Bot.Code_Support.Music
                 }
             }
             Queue_Item[] old_items = Items;
-            Items = new Queue_Item[old_items.Length];
-            for (int i = 0; i <= old_items.Length; i++)
+            Queue_Item[] new_items;
+            if (old_items != null)
             {
-                if (i != old_items.Length)
+                new_items = new Queue_Item[old_items.Length];
+                for (int i = 0; i < old_items.Length; i++)
                 {
-                    Items[i] = old_items[i];
+                    if (i != old_items.Length - 1)
+                    {
+                        new_items[i] = old_items[i];
+                    }
+                    else
+                    {
+                        new_items[i] = new Queue_Item(type, input, Context);
+                    }
                 }
-                else
-                {
-                    Items[i] = new Queue_Item(type, input, Context);
-                }
+            } else
+            {
+                new_items = new Queue_Item[1];
+                new_items[0] = new Queue_Item(type, input, Context);
             }
+            Items = new_items;
         }
 
         public void Refresh()

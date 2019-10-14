@@ -199,16 +199,23 @@ namespace Discord_Bot.Commands.Music
         }
         private async Task Start(string id)
         {
-            Queue Q = new Queue(Context);
-            Q.Add(Queue.Type.Youtube, id, Context);
-            if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
+            try
             {
-                IAudioClient AudioClient = await Channel.ConnectAsync();
-                Playing.StartPlaying(AudioClient, Context, Channel, Q);
+                Queue Q = new Queue(Context);
+                Q.Add(Queue.Type.Youtube, id, Context);
+                if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
+                {
+                    IAudioClient AudioClient = await Channel.ConnectAsync();
+                    Playing.StartPlaying(AudioClient, Context, Channel, Q);
+                }
+                else
+                {
+                    await Context.Channel.SendMessageAsync("The bot is already playing something but i added your song to the Queue");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await Context.Channel.SendMessageAsync("The bot is already playing something but i added your song to the Queue");
+                await Utils.ReportError(Context, "play", ex);
             }
         }
     }
