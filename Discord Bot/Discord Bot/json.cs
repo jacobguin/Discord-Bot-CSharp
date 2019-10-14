@@ -6,7 +6,7 @@ using System.Web.UI;
 
 namespace Discord_Bot
 {
-    public static class json
+    public static class Json
     {
         public static string Parse(string JSON, string Parse)
         {
@@ -26,7 +26,7 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
-                throw new Exception($"There was a proplem reading '{JSON}' | ", ex);
+                throw new Exception($"There was a problem reading '{JSON}' | ", ex);
             }
         }
 
@@ -45,9 +45,9 @@ namespace Discord_Bot
                     return JsonConvert.DeserializeObject<dynamic>(JSON);
                 }
             }
-            catch (Exception ex)//yeaaa
+            catch (Exception ex)
             {
-                throw new Exception($"There was a proplem reading '{JSON}' | ", ex);
+                throw new Exception($"There was a problem reading '{JSON}' | ", ex);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
-                throw new Exception($"There was a proplem reading '{array.ToString()}' or '{NewObject}' | ", ex);
+                throw new Exception($"There was a problem reading '{array.ToString()}' or '{NewObject}' | ", ex);
             }
         }
 
@@ -71,11 +71,11 @@ namespace Discord_Bot
             {
                 dynamic something = JsonConvert.DeserializeObject<dynamic>(JSON);
                 JArray obj = something.channel_messages;
-                return JObject.Parse(obj[int.Parse((obj.Count() - 1).ToString())].ToString());
+                return JObject.Parse(obj[(obj.Count() - 1).ToString()].ToString());
             }
             catch (Exception ex)
             {
-                throw new Exception($"There was a proplem reading '{JSON}' | ", ex);
+                throw new Exception($"There was a problem reading '{JSON}' | ", ex);
             }
         }
     }

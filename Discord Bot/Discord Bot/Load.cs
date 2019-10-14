@@ -2,14 +2,10 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Events;
+using FileTransferProtocalLibrary;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -24,6 +20,11 @@ namespace Discord_Bot
 
         private async void Load_Load(object sender, EventArgs e)
         {
+            string path = $"C:/Users/{Environment.UserName}/Documents/Bot.accdb";
+            FTP ftp = new FTP($"ftp://{Hidden_Info.Ftp.Domain}/Jacob/Program%20Files/Bot/", Hidden_Info.Ftp.Username, Hidden_Info.Ftp.Password);
+            File.Delete(path);
+            ftp.DownloadFile("Bot.accdb", path);
+
             Program.MF = new MainForm();
             Program.MF.Show();
             new Load().BOT();
@@ -31,7 +32,7 @@ namespace Discord_Bot
 
         public async Task BOT()
         {
-            
+
             Program.Client = new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug });
             Program.Commands = new CommandService(new CommandServiceConfig
             {
@@ -52,7 +53,7 @@ namespace Discord_Bot
 
         private void Load_Shown(object sender, EventArgs e)
         {
-            this.Hide();
+            Hide();
         }
     }
 }

@@ -37,9 +37,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Colorful.Console.1.2.9\lib\net461\Colorful.Console.dll</HintPath>
-    </Reference>
     <Reference Include="Discord.Net.Commands, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.Commands.2.1.1\lib\net46\Discord.Net.Commands.dll</HintPath>
     </Reference>
@@ -54,6 +51,9 @@
     </Reference>
     <Reference Include="Discord.Net.WebSocket, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.WebSocket.2.1.1\lib\net46\Discord.Net.WebSocket.dll</HintPath>
+    </Reference>
+    <Reference Include="FileTransferProtocalLibrary">
+      <HintPath>..\..\..\..\..\Documents\FileTransferProtocalLibrary.dll</HintPath>
     </Reference>
     <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
@@ -235,7 +235,7 @@
     <Compile Include="Events\Message Received.cs" />
     <Compile Include="Events\Ready.cs" />
     <Compile Include="Hidden Info.cs" />
-    <Compile Include="json.cs" />
+    <Compile Include="Json.cs" />
     <Compile Include="Load.cs">
       <SubType>Form</SubType>
     </Compile>

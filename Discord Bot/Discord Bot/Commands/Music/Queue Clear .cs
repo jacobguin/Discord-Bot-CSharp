@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Commands.Music
 {
-    
+
     public class queue : ModuleBase<SocketCommandContext>
     {
-        [Command("Queue clear"), Summary("Queue commands fors the bot"), Alias("Q C", "Q Clear", "Queue C")]
+        [Command("Queue clear"), Summary("Queue commands for the bot"), Alias("Q C", "Q Clear", "Queue C")]
         public async Task Clear(params string[] args)
         {
             if (args.Length == 0)
@@ -18,11 +18,11 @@ namespace Discord_Bot.Commands.Music
             }
             else if (args.Length == 1)
             {
-                await Context.Channel.SendMessageAsync("You gave me bad arguments for the que command.");
+                await Context.Channel.SendMessageAsync("You gave me bad arguments for the queue command.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync("You gave me bad arguments for the que command.");
+                await Context.Channel.SendMessageAsync("You gave me bad arguments for the queue command.");
             }
         }
     }

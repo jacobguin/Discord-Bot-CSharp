@@ -3,10 +3,7 @@ using Discord.Audio;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Code_Support.Music
@@ -34,6 +31,7 @@ namespace Discord_Bot.Code_Support.Music
                     {
                         if (Q.Items[0].Type == Queue.Type.End)
                         {
+                            await Context.Channel.SendMessageAsync("I am done playing music");
                             Q.Clear();
                             await Stop(Client, Context);
                             break;
@@ -50,7 +48,7 @@ namespace Discord_Bot.Code_Support.Music
                     }
                     catch (Exception ex)
                     {
-                        await Utils.RepotError(Context, "Play", ex);
+                        await Utils.ReportError(Context, "Play", ex);
                     }
                 }
                 finally
@@ -85,9 +83,9 @@ namespace Discord_Bot.Code_Support.Music
         {
             EmbedBuilder e = new EmbedBuilder();
             WebClient web = new WebClient();
-            string text = web.DownloadString("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + ID + "&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube));
-            e.Title = "Now Playing: " + '"' + json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + json.Parse(text, "items[0].snippet.channelTitle");
-            e.WithThumbnailUrl(json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
+            string text = web.DownloadString("https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ID}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube});
+            e.Title = "Now Playing: " + '"' + Json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + Json.Parse(text, "items[0].snippet.channelTitle");
+            e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
             e.WithColor(255, 0, 0);
             e.WithFooter($"https://www.youtube.com/watch?v={ID}");
             return e.Build();

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Commands.Music
 {
-    public class Play: ModuleBase<SocketCommandContext>
+    public class Play : ModuleBase<SocketCommandContext>
     {
         JArray items = null;
         IVoiceChannel Channel = null;
@@ -39,7 +39,7 @@ namespace Discord_Bot.Commands.Music
                         }
                         else
                         {
-                            
+
                             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                             {
                                 Queue Q = new Queue(Context);
@@ -141,7 +141,7 @@ namespace Discord_Bot.Commands.Music
             }
             catch (Exception ex)
             {
-                await Utils.RepotError(Context, "Play", ex);
+                await Utils.ReportError(Context, "Play", ex);
             }
         }
 

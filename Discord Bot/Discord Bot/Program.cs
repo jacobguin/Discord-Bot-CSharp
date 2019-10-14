@@ -1,15 +1,7 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
-using Discord_Bot.Events;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Threading.Tasks;
-using Console = Colorful.Console;
 
 namespace Discord_Bot
 {
