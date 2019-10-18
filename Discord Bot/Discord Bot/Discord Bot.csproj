@@ -225,6 +225,7 @@
     <Compile Include="Code Support\Music\Backend.cs" />
     <Compile Include="Code Support\Music\Playing.cs" />
     <Compile Include="Code Support\Music\Queue.cs" />
+    <Compile Include="Commands\Avatar.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Music\Play.cs" />
     <Compile Include="Commands\Music\Queue Clear .cs" />
