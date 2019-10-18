@@ -7,7 +7,7 @@ namespace Discord_Bot.Commands.Music
 
     public class queue : ModuleBase<SocketCommandContext>
     {
-        [Command("Queue clear"), Summary("Queue commands for the bot"), Alias("Q C", "Q Clear", "Queue C")]
+        [Command("Queue clear"), Summary("Clears the Queue for music"), Alias("Q C", "Q Clear", "Queue C")]
         public async Task Clear(params string[] args)
         {
             if (args.Length == 0)
