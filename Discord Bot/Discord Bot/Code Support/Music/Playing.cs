@@ -64,12 +64,19 @@ namespace Discord_Bot.Code_Support.Music
             await Stop(c, s);
         }
 
-        private async static Task Client_UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+        private async static Task Client_UserVoiceStateUpdated(SocketUser User, SocketVoiceState BeforeState, SocketVoiceState AfterState)
         {
-            int count = PeopleInCall(s, v);
-            if (count == 0)
+            if (User == Program.Client.GetUser(508008523146199061))
             {
                 await Stop(c, s);
+            }
+            else
+            {
+                int count = PeopleInCall(s, v);
+                if (count == 0)
+                {
+                    await Stop(c, s);
+                }
             }
         }
 
