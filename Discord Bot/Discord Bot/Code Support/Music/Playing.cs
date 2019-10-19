@@ -66,13 +66,16 @@ namespace Discord_Bot.Code_Support.Music
 
         private async static Task Client_UserVoiceStateUpdated(SocketUser User, SocketVoiceState BeforeState, SocketVoiceState AfterState)
         {
-            if (User == Program.Client.GetUser(508008523146199061))
+            if (User.Id == 508008523146199061)
             {
-                await Stop(c, s);
+                if (AfterState.VoiceChannel == null)
+                {
+                    await Stop(c, s);
+                }
             }
             else
             {
-                int count = PeopleInCall(s, v);
+                int count = PeopleInCall(s);
                 if (count == 0)
                 {
                     await Stop(c, s);
@@ -98,9 +101,9 @@ namespace Discord_Bot.Code_Support.Music
             return e.Build();
         }
 
-        private static int PeopleInCall(SocketCommandContext Context, IVoiceChannel Channel)
+        private static int PeopleInCall(SocketCommandContext Context)
         {
-            return Context.Client.GetGuild(Context.Guild.Id).GetVoiceChannel(Channel.Id).Users.Count - 1;
+            return Context.Client.GetGuild(Context.Guild.Id).GetUser(508008523146199061).VoiceChannel.Users.Count - 1;
         }
     }
 }
