@@ -1,74 +1,73 @@
-﻿using Discord;
-using Discord.Audio;
-using Discord.Commands;
-using Discord.WebSocket;
-using System;
-using System.Net;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Code_Support.Music
+﻿namespace Discord_Bot.Code_Support.Music
 {
+    using System;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Discord;
+    using Discord.Audio;
+    using Discord.Commands;
+    using Discord.WebSocket;
+
     public static class Playing
     {
         private static IAudioClient c;
-        private static IVoiceChannel v;
         private static SocketCommandContext s;
 
-        public static async Task StartPlaying(IAudioClient Client, SocketCommandContext Context, IVoiceChannel Channel, Queue Q)
+        public static async Task StartPlaying(IAudioClient client, SocketCommandContext context, IVoiceChannel channel, Queue q)
         {
-            Database.Update("Music", "Playing", "Server_ID", Context.Guild.Id.ToString(), true);
-            v = Channel;
-            s = Context;
-            c = Client;
+            Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), true);
+            s = context;
+            c = client;
             Program.Client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
             Program.Client.LoggedOut += Client_LoggedOut;
             while (true)
             {
-                Q.Refresh();
+                q.Refresh();
                 try
                 {
                     try
                     {
-                        if (Q.Items[0].Type == Queue.Type.End)
+                        if (q.Items[0].Type == Queue.Type.End)
                         {
-                            await Context.Channel.SendMessageAsync("I am done playing music");
-                            Q.Clear();
-                            await Stop(Client, Context);
+                            await context.Channel.SendMessageAsync("I am done playing music");
+                            q.Clear();
+                            await Stop(client, context);
                             break;
                         }
-                        else if (Q.Items[0].Type == Queue.Type.Youtube)
+                        else if (q.Items[0].Type == Queue.Type.Youtube)
                         {
-                            await Context.Channel.SendMessageAsync("", false, Youtube_video_embed(Q.Items[0].YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
-                            await Backend.SendUrlAsync(Client, Q.Items[0].YtVideo.ID);
+                            await context.Channel.SendMessageAsync("", false, Youtube_video_embed(q.Items[0].YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
+                            await Backend.SendUrlAsync(client, q.Items[0].YtVideo.ID);
                         }
-                        else if (Q.Items[0].Type == Queue.Type.Playlist)
+                        else if (q.Items[0].Type == Queue.Type.Playlist)
                         {
-                            //not here yet
+                            // not here yet
                         }
                     }
                     catch (Exception ex)
                     {
-                        await Utils.ReportError(Context, "Play", ex);
+                        await Utils.ReportError(context, "Play", ex);
                     }
                 }
                 finally
                 {
-                    Q.Items[0].Remove();
+                    q.Items[0].Remove();
                 }
             }
-            await Stop(Client, Context);
+
+            await Stop(client, context);
         }
 
-        private async static Task Client_LoggedOut()
+        private static async Task Client_LoggedOut()
         {
             await Stop(c, s);
         }
 
-        private async static Task Client_UserVoiceStateUpdated(SocketUser User, SocketVoiceState BeforeState, SocketVoiceState AfterState)
+        private static async Task Client_UserVoiceStateUpdated(SocketUser user, SocketVoiceState beforeState, SocketVoiceState afterState)
         {
-            if (User.Id == 508008523146199061)
+            if (user.Id == 508008523146199061)
             {
-                if (AfterState.VoiceChannel == null)
+                if (afterState.VoiceChannel == null)
                 {
                     await Stop(c, s);
                 }
@@ -83,27 +82,27 @@ namespace Discord_Bot.Code_Support.Music
             }
         }
 
-        private static async Task Stop(IAudioClient Client, SocketCommandContext Context)
+        private static async Task Stop(IAudioClient client, SocketCommandContext context)
         {
-            Database.Update("Music", "Playing", "Server_ID", Context.Guild.Id.ToString(), false);
-            await Client.StopAsync();
+            Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), false);
+            await client.StopAsync();
         }
 
-        private static Embed Youtube_video_embed(string ID)
+        private static Embed Youtube_video_embed(string iD)
         {
             EmbedBuilder e = new EmbedBuilder();
             WebClient web = new WebClient();
-            string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ID}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
+            string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={iD}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
             e.Title = "Now Playing: " + '"' + Json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + Json.Parse(text, "items[0].snippet.channelTitle");
             e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
             e.WithColor(255, 0, 0);
-            e.WithFooter($"https://www.youtube.com/watch?v={ID}");
+            e.WithFooter($"https://www.youtube.com/watch?v={iD}");
             return e.Build();
         }
 
-        private static int PeopleInCall(SocketCommandContext Context)
+        private static int PeopleInCall(SocketCommandContext context)
         {
-            return Context.Client.GetGuild(Context.Guild.Id).GetUser(508008523146199061).VoiceChannel.Users.Count - 1;
+            return context.Client.GetGuild(context.Guild.Id).GetUser(508008523146199061).VoiceChannel.Users.Count - 1;
         }
     }
 }

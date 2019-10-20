@@ -1,201 +1,204 @@
-﻿using System;
-using System.Data.OleDb;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using System;
+    using System.Data.OleDb;
+
     public static class Database
     {
         private static readonly string FilePath = $"C:/Users/{Environment.UserName}/Documents/Bot.accdb";
         private static readonly string Con = $@"Provider = Microsoft.ACE.OLEDB.12.0; Data Source = {FilePath}";
 
-        public static string Read(string Table, string WhereColumn, string KeyInColumn, string Return)
+        public static string Read(string table, string whereColumn, string keyInColumn, string @return)
         {
-            string Out = null;
+            string @out = null;
 
-            OleDbConnection Connection = new OleDbConnection
+            OleDbConnection connection = new OleDbConnection
             {
-                ConnectionString = Con
+                ConnectionString = Con,
             };
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
             {
-                Connection = Connection,
-                CommandText = $"SELECT * FROM [{Table}] WHERE [{WhereColumn}] = '" + KeyInColumn + "'"
+                Connection = connection,
+                CommandText = $"SELECT * FROM [{table}] WHERE [{whereColumn}] = '" + keyInColumn + "'",
             };
-            OleDbDataReader Reader = Command.ExecuteReader();
-            while (Reader.Read())
+            OleDbDataReader reader = command.ExecuteReader();
+            while (reader.Read())
             {
                 try
                 {
-                    Out = Reader[Return].ToString();
+                    @out = reader[@return].ToString();
                 }
                 catch (Exception)
                 {
-                    Connection.Close();
+                    connection.Close();
                     return null;
                 }
             }
-            Connection.Close();
-            return Out;
+
+            connection.Close();
+            return @out;
         }
 
-        public static int ReadInt(string Table, string WhereColumn, string KeyInColumn, string Return)
+        public static int ReadInt(string table, string whereColumn, string keyInColumn, string @return)
         {
-            int Out = 0;
+            int @out = 0;
 
-            OleDbConnection Connection = new OleDbConnection
+            OleDbConnection connection = new OleDbConnection
             {
-                ConnectionString = Con
+                ConnectionString = Con,
             };
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
             {
-                Connection = Connection,
-                CommandText = $"SELECT * FROM [{Table}] WHERE [{WhereColumn}] = '" + KeyInColumn + "'"
+                Connection = connection,
+                CommandText = $"SELECT * FROM [{table}] WHERE [{whereColumn}] = '{keyInColumn}'",
             };
-            OleDbDataReader Reader = Command.ExecuteReader();
-            while (Reader.Read())
+            OleDbDataReader reader = command.ExecuteReader();
+            while (reader.Read())
             {
                 try
                 {
-                    string n = Reader[Return].ToString();
-                    int.TryParse(n, out Out);
+                    string n = reader[@return].ToString();
+                    int.TryParse(n, out @out);
                 }
                 catch (Exception)
                 {
-                    Connection.Close();
+                    connection.Close();
                     return 0;
                 }
             }
-            Connection.Close();
-            return Out;
+
+            connection.Close();
+            return @out;
         }
 
-        public static string Read(string Command, string Return)
+        public static string Read(string command1, string @return)
         {
-            string Out = null;
+            string @out = null;
 
-            OleDbConnection Connection = new OleDbConnection
+            OleDbConnection connection = new OleDbConnection
             {
-                ConnectionString = Con
+                ConnectionString = Con,
             };
-            Connection.OpenAsync();
+            connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {
-                Connection = Connection,
-                CommandText = Command
+                Connection = connection,
+                CommandText = command1,
             };
-            OleDbDataReader Reader = command.ExecuteReader();
-            while (Reader.Read())
+            OleDbDataReader reader = command.ExecuteReader();
+            while (reader.Read())
             {
                 try
                 {
-                    Out = Reader[Return].ToString();
+                    @out = reader[@return].ToString();
                 }
                 catch (Exception)
                 {
-                    Connection.Close();
+                    connection.Close();
                     return null;
                 }
             }
-            Connection.Close();
-            return Out;
+
+            connection.Close();
+            return @out;
         }
 
-        public static void Write(string Table, string Column, string Input)
+        public static void Write(string table, string column, string input)
         {
-            OleDbConnection Connection = new OleDbConnection
+            OleDbConnection connection = new OleDbConnection
             {
-                ConnectionString = Con
+                ConnectionString = Con,
             };
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
-            {
-                Connection = Connection,
-                CommandText = $"INSERT INTO [{Table}] ([{Column}]) VALUES ('{Input}')"
-            };
-            Command.ExecuteNonQuery();
-            Connection.Close();
-        }
-
-        public static void Write(string Command)
-        {
-            OleDbConnection Connection = new OleDbConnection
-            {
-                ConnectionString = Con
-            };
-            Connection.OpenAsync();
+            connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {
-                Connection = Connection,
-                CommandText = Command
+                Connection = connection,
+                CommandText = $"INSERT INTO [{table}] ([{column}]) VALUES ('{input}')",
             };
             command.ExecuteNonQuery();
-            Connection.Close();
+            connection.Close();
         }
 
-        public static void Update(string Table, string EditColumn, string WhereColumn, string KeyInColumn, string New)
+        public static void Write(string command1)
         {
-            OleDbConnection Connection = new OleDbConnection
+            OleDbConnection connection = new OleDbConnection
             {
-                ConnectionString = Con
+                ConnectionString = Con,
             };
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
-            {
-                Connection = Connection,
-                CommandText = $"UPDATE [{Table}] SET [{EditColumn}] = '{New}' WHERE [{WhereColumn}] = '{KeyInColumn}'"
-            };
-            Command.ExecuteNonQuery();
-            Connection.Close();
-        }
-
-        public static void Remove(string Table, string WhereColumn, string KeyInColumn)
-        {
-            OleDbConnection Connection = new OleDbConnection
-            {
-                ConnectionString = Con
-            };
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
-            {
-                Connection = Connection,
-                CommandText = $"DELETE FROM [{Table}] WHERE [{WhereColumn}] = '{KeyInColumn}'"
-            };
-            Command.ExecuteNonQuery();
-            Connection.Close();
-        }
-
-        public static void Update(string Table, string EditColumn, string WhereColumn, string KeyInColumn, bool IsChecked)
-        {
-            OleDbConnection Connection = new OleDbConnection();
-            string Checked = IsChecked == true ? "1" : "0";
-
-            Connection.ConnectionString = Con;
-            Connection.OpenAsync();
-            OleDbCommand Command = new OleDbCommand
-            {
-                Connection = Connection,
-                CommandText = $"UPDATE [{Table}] SET [{EditColumn}] = {Checked} WHERE [{WhereColumn}] = '{KeyInColumn}'"
-            };
-            Command.ExecuteNonQuery();
-            Connection.Close();
-        }
-
-        public static void Update(string Command)
-        {
-            OleDbConnection Connection = new OleDbConnection
-            {
-                ConnectionString = Con
-            };
-            Connection.OpenAsync();
+            connection.OpenAsync();
             OleDbCommand command = new OleDbCommand
             {
-                Connection = Connection,
-                CommandText = Command
+                Connection = connection,
+                CommandText = command1,
             };
             command.ExecuteNonQuery();
-            Connection.Close();
+            connection.Close();
+        }
+
+        public static void Update(string table, string editColumn, string whereColumn, string keyInColumn, string @new)
+        {
+            OleDbConnection connection = new OleDbConnection
+            {
+                ConnectionString = Con,
+            };
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
+            {
+                Connection = connection,
+                CommandText = $"UPDATE [{table}] SET [{editColumn}] = '{@new}' WHERE [{whereColumn}] = '{keyInColumn}'",
+            };
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public static void Remove(string table, string whereColumn, string keyInColumn)
+        {
+            OleDbConnection connection = new OleDbConnection
+            {
+                ConnectionString = Con,
+            };
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
+            {
+                Connection = connection,
+                CommandText = $"DELETE FROM [{table}] WHERE [{whereColumn}] = '{keyInColumn}'",
+            };
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public static void Update(string table, string editColumn, string whereColumn, string keyInColumn, bool isChecked)
+        {
+            OleDbConnection connection = new OleDbConnection();
+            string @checked = isChecked == true ? "1" : "0";
+
+            connection.ConnectionString = Con;
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
+            {
+                Connection = connection,
+                CommandText = $"UPDATE [{table}] SET [{editColumn}] = {@checked} WHERE [{whereColumn}] = '{keyInColumn}'",
+            };
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public static void Update(string command1)
+        {
+            OleDbConnection connection = new OleDbConnection
+            {
+                ConnectionString = Con,
+            };
+            connection.OpenAsync();
+            OleDbCommand command = new OleDbCommand
+            {
+                Connection = connection,
+                CommandText = command1,
+            };
+            command.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }

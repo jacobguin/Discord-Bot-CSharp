@@ -1,30 +1,32 @@
-﻿using Discord;
-using Discord.Audio;
-using Discord.Commands;
-using Discord.Rest;
-using Discord.WebSocket;
-using Discord_Bot.Code_Support.Music;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Commands.Music
+﻿namespace Discord_Bot.Commands.Music
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Discord;
+    using Discord.Audio;
+    using Discord.Commands;
+    using Discord.Rest;
+    using Discord.WebSocket;
+    using Discord_Bot.Code_Support.Music;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     public class Play : ModuleBase<SocketCommandContext>
     {
-        JArray items = null;
-        IVoiceChannel Channel = null;
-        int Succes = 0;
-        [Command("Play", RunMode = RunMode.Async), Summary("Music")]
-        public async Task play(params string[] Search)
+        private JArray items = null;
+        private IVoiceChannel channel = null;
+        private int success = 0;
+
+        [Command("Play", RunMode = RunMode.Async)]
+        [Summary("Music")]
+        public async Task PlayCmd(params string[] search)
         {
             try
             {
-                if (Search.Length == 0)
+                if (search.Length == 0)
                 {
                     if (string.IsNullOrEmpty(Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue")))
                     {
@@ -32,18 +34,17 @@ namespace Discord_Bot.Commands.Music
                     }
                     else
                     {
-                        Channel = Channel ?? (Context.Message.Author as IGuildUser)?.VoiceChannel;
-                        if (Channel == null)
+                        channel = channel ?? (Context.Message.Author as IGuildUser)?.VoiceChannel;
+                        if (channel == null)
                         {
                             await Context.Channel.SendMessageAsync("You must be in a voice channel.");
                         }
                         else
                         {
-
                             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                             {
-                                Queue Q = new Queue(Context);
-                                await Playing.StartPlaying(await Channel.ConnectAsync(), Context, Channel, Q);
+                                Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
+                                await Playing.StartPlaying(await channel.ConnectAsync(), Context, channel, q);
                             }
                             else
                             {
@@ -63,21 +64,19 @@ namespace Discord_Bot.Commands.Music
 
                     string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
 
-                    Channel = Channel ?? (Context.Message.Author as IGuildUser)?.VoiceChannel;
-                    if (Channel == null)
+                    channel = channel ?? (Context.Message.Author as IGuildUser)?.VoiceChannel;
+                    if (channel == null)
                     {
                         await Context.Channel.SendMessageAsync("You must be in a voice channel.");
                     }
                     else
                     {
-
-                        string url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + Uri.EscapeUriString(string.Join(" ", Search)) + "&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube);
+                        string url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + Uri.EscapeUriString(string.Join(" ", search)) + "&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube);
 
                         WebClient webClient = new WebClient();
                         string value = webClient.DownloadString(url);
 
-                        dynamic Json = JsonConvert.DeserializeObject<dynamic>(value);
-                        items = Json.items;
+                        JArray items = JsonConvert.DeserializeObject<dynamic>(value).items;
 
                         if (items.Count == 0)
                         {
@@ -85,14 +84,13 @@ namespace Discord_Bot.Commands.Music
                         }
                         else
                         {
-
                             int index = 0;
                             dynamic[] titles = items.Select(i =>
                             {
                                 index += 1;
                                 return index + ": " + i.Value<dynamic>().snippet.title;
                             }).ToArray();
-                            string msg = "**Song Results:**\n```\n" + String.Join("\n", titles) + "\n```**This message will expire in 10 seconds!**";
+                            string msg = $"**Song Results:**\n```\n{string.Join("\n", titles)}\n```**This message will expire in 10 seconds!**";
                             RestUserMessage m = await Context.Channel.SendMessageAsync(msg);
                             int results = items.Count;
                             int current = 1;
@@ -132,10 +130,10 @@ namespace Discord_Bot.Commands.Music
                                 Context.Client.ReactionAdded -= Client_ReactionAdded;
                                 await m.DeleteAsync();
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                            }
                         }
-
-                        // Console.WriteLine(items);
                     }
                 }
             }
@@ -145,7 +143,7 @@ namespace Discord_Bot.Commands.Music
             }
         }
 
-        private async Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> Message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
             string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
 
@@ -157,11 +155,15 @@ namespace Discord_Bot.Commands.Music
             else num = 5;
 
             if (reaction.UserId == 508008523146199061) return;
-            IUserMessage msg = await Message.DownloadAsync();
+            IUserMessage msg = await message.DownloadAsync();
             if (msg.Author.Id != 508008523146199061) return;
             if (!emojiArr.Contains(reaction.Emote.Name)) return;
             if (!msg.ToString().StartsWith("**Song Results:**")) return;
-            if (items.Count < num) { await msg.Channel.SendMessageAsync("No result with that number found."); return; }
+            if (items.Count < num)
+            {
+                await msg.Channel.SendMessageAsync("No result with that number found.");
+                return;
+            }
 
             Context.Client.ReactionAdded -= Client_ReactionAdded;
             await msg.DeleteAsync();
@@ -170,43 +172,45 @@ namespace Discord_Bot.Commands.Music
             {
                 case "1⃣":
                     id = items.First<dynamic>().id.videoId;
-                    Succes++;
+                    success++;
                     break;
                 case "2⃣":
                     id = items.Value<dynamic>(1).id.videoId;
-                    Succes++;
+                    success++;
                     break;
                 case "3⃣":
                     id = items.Value<dynamic>(2).id.videoId;
-                    Succes++;
+                    success++;
                     break;
                 case "4⃣":
                     id = items.Value<dynamic>(3).id.videoId;
-                    Succes++;
+                    success++;
                     break;
                 case "5⃣":
                     id = items.Last<dynamic>().id.videoId;
-                    Succes++;
+                    success++;
                     break;
                 default:
                     id = "this won't occur";
                     break;
             }
-            if (Succes != 0)
+
+            if (success != 0)
             {
-                Start(id);
+                _ = Start(id);
             }
         }
+
         private async Task Start(string id)
         {
             try
             {
-                Queue Q = new Queue(Context);
-                Q.Add(Queue.Type.Youtube, id);
+                Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
+                q.Add(Code_Support.Music.Queue.Type.Youtube, id);
                 if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                 {
-                    IAudioClient AudioClient = await Channel.ConnectAsync();
-                    Playing.StartPlaying(AudioClient, Context, Channel, Q);
+                    IAudioClient audioClient = await channel.ConnectAsync();
+                    _ = Playing.StartPlaying(audioClient, Context, channel, q);
                 }
                 else
                 {

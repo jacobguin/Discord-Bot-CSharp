@@ -1,10 +1,10 @@
-﻿using Discord.Commands;
-using Discord.WebSocket;
-using System;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Events
+﻿namespace Discord_Bot.Events
 {
+    using System;
+    using System.Threading.Tasks;
+    using Discord.Commands;
+    using Discord.WebSocket;
+
     public static class Message_Received
     {
         public static void Load()
@@ -12,30 +12,31 @@ namespace Discord_Bot.Events
             Program.Client.MessageReceived += Client_MessageReceived;
         }
 
-        private async static Task Client_MessageReceived(SocketMessage MessagePram)
+        private static async Task Client_MessageReceived(SocketMessage messagePram)
         {
-            SocketUserMessage Message = MessagePram as SocketUserMessage;
-            SocketCommandContext Context = new SocketCommandContext(Program.Client, Message);
-            if (Context.Message == null || Context.Message.Content == "") return;
-            if (Context.User.IsBot) return;
+            SocketUserMessage message = messagePram as SocketUserMessage;
+            SocketCommandContext context = new SocketCommandContext(Program.Client, message);
+            if (context.Message == null || context.Message.Content == "") return;
+            if (context.User.IsBot) return;
 
-            string Prefix = Utils.GetPrefix(Context);
+            string prefix = Utils.GetPrefix(context);
 
-            int ArgPos = 0;
-            if (!(Message.HasStringPrefix(Prefix, ref ArgPos) || Message.HasMentionPrefix(Program.Client.CurrentUser, ref ArgPos))) return;
-            if (Context.Message.ToString() == Prefix) return;
+            int argPos = 0;
+            if (!(message.HasStringPrefix(prefix, ref argPos) || message.HasMentionPrefix(Program.Client.CurrentUser, ref argPos))) return;
+            if (context.Message.ToString() == prefix) return;
 
-            IResult Result = await Program.Commands.ExecuteAsync(Context, ArgPos, null);
+            IResult result = await Program.Commands.ExecuteAsync(context, argPos, null);
 
-            if (!Result.IsSuccess)
+            if (!result.IsSuccess)
             {
-                Program.MF.AddText($"{DateTime.Now} at Commands] Something went wrong with a command  Text: {Context.Message.Content} | Error: {Result.ErrorReason}", System.Drawing.Color.DarkRed);
-                string ERROR = Result.ErrorReason;
-                if (ERROR == "Unknown command.")
+                Program.MF.AddText($"{DateTime.Now} at Commands] Something went wrong with a command  Text: {context.Message.Content} | Error: {result.ErrorReason}", System.Drawing.Color.DarkRed);
+                string err = result.ErrorReason;
+                if (err == "Unknown command.")
                 {
-                    ERROR = $"Unknown Command! Use {Prefix}Help to see the commands.";
+                    err = $"Unknown Command! Use {prefix}Help to see the commands.";
                 }
-                await Context.Channel.SendMessageAsync(ERROR);
+
+                await context.Channel.SendMessageAsync(err);
             }
         }
     }

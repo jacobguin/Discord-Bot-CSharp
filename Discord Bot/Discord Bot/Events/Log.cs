@@ -1,9 +1,9 @@
-﻿using Discord;
-using System;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Events
+﻿namespace Discord_Bot.Events
 {
+    using System;
+    using System.Threading.Tasks;
+    using Discord;
+
     public static class Log
     {
         public static void Load()
@@ -11,9 +11,9 @@ namespace Discord_Bot.Events
             Program.Client.Log += Client_Log;
         }
 
-        private static async Task Client_Log(LogMessage Message)
+        private static async Task Client_Log(LogMessage message)
         {
-            Program.MF.AddText($"[{DateTime.Now} at {Message.Source}] {Message.Message}", System.Drawing.Color.Gold);
+            Program.MF.AddText($"[{DateTime.Now} at {message.Source}] {message.Message}", System.Drawing.Color.Gold);
         }
     }
 }

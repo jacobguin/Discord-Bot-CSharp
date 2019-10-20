@@ -1,14 +1,31 @@
-﻿using Discord.Audio;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Code_Support.Music
+﻿namespace Discord_Bot.Code_Support.Music
 {
+    using System.Diagnostics;
+    using System.IO;
+    using System.Threading.Tasks;
+    using Discord.Audio;
+
     public static class Backend
     {
         private static AudioOutStream discord;
         private static Stream output;
+
+        public static async Task SendUrlAsync(IAudioClient client, string url)
+        {
+            using (Process ffmpeg = YTStream(url))
+            {
+                output = ffmpeg.StandardOutput.BaseStream;
+                discord = client.CreatePCMStream(AudioApplication.Mixed);
+                try
+                {
+                    await output.CopyToAsync(discord);
+                }
+                finally
+                {
+                    await discord.FlushAsync();
+                }
+            }
+        }
 
         private static Process YTStream(string url)
         {
@@ -20,17 +37,6 @@ namespace Discord_Bot.Code_Support.Music
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
             });
-        }
-
-        public static async Task SendUrlAsync(IAudioClient client, string url)
-        {
-            using (Process ffmpeg = YTStream(url))
-            {
-                output = ffmpeg.StandardOutput.BaseStream;
-                discord = client.CreatePCMStream(AudioApplication.Mixed);
-                try { await output.CopyToAsync(discord); }
-                finally { await discord.FlushAsync(); }
-            }
         }
     }
 }

@@ -1,46 +1,44 @@
-﻿using Discord;
-using Discord.Commands;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Commands
+﻿namespace Discord_Bot.Commands
 {
+    using System.Threading.Tasks;
+    using Discord;
+    using Discord.Commands;
+
     public class Help : ModuleBase<SocketCommandContext>
     {
-        [Command("Help"), Summary("Shows a list of commands and gives a summary of them.")]
-        public async Task help(params string[] Command)
+        [Command("Help")]
+        [Summary("Shows a list of commands and gives a summary of them.")]
+        public async Task HelpCmd(params string[] command)
         {
-            string Prefix = Utils.GetPrefix(Context);
-            if (Command.Length == 0)
+            string prefix = Utils.GetPrefix(Context);
+            if (command.Length == 0)
             {
-
-                EmbedBuilder Embed = new EmbedBuilder();
-                Embed.Title = "Jacob Bot Commands";
-
-                string DEC = "```markdown\n";
-
-                foreach (CommandInfo Info in Program.Commands.Commands)
+                EmbedBuilder embed = new EmbedBuilder
                 {
-                    DEC = DEC + "- " + Prefix + Info.Name + "\n";
+                    Title = "Jacob Bot Commands",
+                };
+
+                string dec = "```markdown\n";
+
+                foreach (CommandInfo info in Program.Commands.Commands)
+                {
+                    dec += $"- {prefix}{info.Name}\n";
                 }
 
-                Embed.WithDescription($"{DEC}```");
-                Embed.WithFooter("These are all the commands for the bot");
+                embed.WithDescription($"{dec}```");
+                embed.WithFooter("These are all the commands for the bot");
 
-                await Context.Channel.SendMessageAsync("", false, Embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            else if (Command.Length == 1)
+            else if (command.Length == 1)
             {
-                foreach (CommandInfo Info in Program.Commands.Commands)
+                foreach (CommandInfo info1 in Program.Commands.Commands)
                 {
-                    if (Command[0].ToLower() == Info.Name.ToLower())
+                    if (command[0].ToLower() == info1.Name.ToLower())
                     {
-                        await Context.Channel.SendMessageAsync(Info.Summary);
+                        await Context.Channel.SendMessageAsync(info1.Summary);
                     }
                 }
-            }
-            else
-            {
-                //IDK what to do here
             }
         }
     }

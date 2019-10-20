@@ -1,24 +1,15 @@
-﻿using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Code_Support.Music
+﻿namespace Discord_Bot.Code_Support.Music
 {
+    using System.Linq;
+    using Discord.Commands;
+
     public class Queue
     {
-
-        public Queue(SocketCommandContext Context)
+        public Queue(SocketCommandContext context)
         {
-            Items = List(Context);
-            context = Context;
+            Items = List(context);
+            Context = context;
         }
-
-        public Queue_Item[] Items { get; internal set; }
-
-        private SocketCommandContext context { get; }
 
         public enum Type
         {
@@ -27,18 +18,56 @@ namespace Discord_Bot.Code_Support.Music
             End,
         }
 
-        private static Queue_Item[] List(SocketCommandContext Context)
+        public Queue_Item[] Items { get; internal set; }
+
+        private SocketCommandContext Context { get; }
+
+        public void Clear()
         {
-            string RAW = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
-            if (string.IsNullOrEmpty(RAW))
+            Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), "");
+            Items = null;
+        }
+
+        public void Add(Type type, string input)
+        {
+            if (type == Type.Youtube)
+            {
+                string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+                if (!string.IsNullOrEmpty(old))
+                {
+                    Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{input}|End|");
+                }
+                else
+                {
+                    if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == null)
+                    {
+                        Database.Write("Music", "Server_ID", Context.Guild.Id.ToString());
+                    }
+
+                    Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{input}|End|");
+                }
+            }
+
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            Items = List(Context);
+        }
+
+        private static Queue_Item[] List(SocketCommandContext context)
+        {
+            string raw_ = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
+            if (string.IsNullOrEmpty(raw_))
             {
                 return null;
             }
             else
             {
-                RAW = RAW.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
-                string[] raw = RAW.Split('|');
-                Queue_Item[] Output = new Queue_Item[raw.Count() - 2];
+                raw_ = raw_.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
+                string[] raw = raw_.Split('|');
+                Queue_Item[] output = new Queue_Item[raw.Count() - 2];
 
                 for (int i = -1; i < raw.Count() - 2; i++)
                 {
@@ -48,111 +77,82 @@ namespace Discord_Bot.Code_Support.Music
                         {
                             if (raw[i + 1].StartsWith("yt"))
                             {
-                                Output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""), Context);
+                                output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""), context);
                             }
                             else if (raw[i + 1].StartsWith("playlist"))
                             {
-                                //Will not ocure Yet, this may change in the fucture.
-                                Output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""), Context);
+                                // Will not ocure Yet, this may change in the fucture.
+                                output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""), context);
                             }
                             else
                             {
-                                Output[i] = new Queue_Item(Type.End, null, Context);
+                                output[i] = new Queue_Item(Type.End, null, context);
                             }
                         }
                     }
                 }
-                return Output;
+
+                return output;
             }
         }
 
         public class Queue_Item
         {
-            public Queue_Item(Type type, string Result, SocketCommandContext Context)
+            public Queue_Item(Type type, string result, SocketCommandContext context)
             {
                 Type = type;
-                context = Context;
+                Context = context;
                 if (Type == Type.Youtube)
                 {
-                    YtVideo = new YtVideo(Result);
+                    YtVideo = new YtVideo(result);
                 }
                 else
                 {
-                    //wip
+                    // wip
                 }
             }
-
-            public void Remove()
-            {
-                if (Type == Type.Youtube)
-                {
-                    string old = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
-                    if (old.Contains("|yt|"))
-                    {
-                        Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), old.Replace($"|yt|{YtVideo.ID}", ""));
-                    }
-                }
-                else if (Type == Type.Playlist)
-                {
-                    //not here yet WIP
-                }
-            }
-
-            private SocketCommandContext context { get; }
 
             public Type Type { get; }
 
             public YtVideo YtVideo { get; }
 
             public QueuePlaylist Playlist { get; }
+
+            private SocketCommandContext Context { get; }
+
+            public void Remove()
+            {
+                if (Type == Type.Youtube)
+                {
+                    string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+                    if (old.Contains("|yt|"))
+                    {
+                        Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace($"|yt|{YtVideo.ID}", ""));
+                    }
+                }
+                else if (Type == Type.Playlist)
+                {
+                    // wip
+                }
+            }
         }
 
         public class QueuePlaylist
         {
-            //WIP
+            // WIP
             public ulong Author { get; }
+
             public string Title { get; }
         }
 
         public class YtVideo
         {
-            public YtVideo(string Id)
+            public YtVideo(string id)
             {
-                ID = Id;
+                ID = id;
             }
+
             public string ID { get; }
-        }
-
-        public void Clear()
-        {
-            Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), "");
-            Items = null;
-        }
-
-        public void Add(Type type, string input)
-        {
-            if (type == Type.Youtube)
-            {
-                string old = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
-                if (!string.IsNullOrEmpty(old))
-                {
-                    Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{input}|End|");
-                }
-                else
-                {
-                    if (Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Playing") == null)
-                    {
-                        Database.Write("Music", "Server_ID", context.Guild.Id.ToString());
-                    }
-                    Database.Update("Music", "Queue", "Server_ID", context.Guild.Id.ToString(), $"|yt|{input}|End|");
-                }
-            }
-            Refresh();
-        }
-
-        public void Refresh()
-        {
-            Items = List(context);
         }
     }
 }

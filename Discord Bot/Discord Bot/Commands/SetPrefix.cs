@@ -1,12 +1,13 @@
-﻿using Discord.Commands;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Commands
+﻿namespace Discord_Bot.Commands
 {
+    using System.Threading.Tasks;
+    using Discord.Commands;
+
     public class SetPrefix : ModuleBase<SocketCommandContext>
     {
-        [Command("setprefix"), Summary("Changes the user prefix")]
-        public async Task sp(params string[] prefix)
+        [Command("setprefix")]
+        [Summary("Changes the user prefix")]
+        public async Task Sp(params string[] prefix)
         {
             if (prefix.Length > 1)
             {

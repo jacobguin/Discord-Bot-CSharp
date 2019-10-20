@@ -1,19 +1,20 @@
-﻿using Discord.Commands;
-using Discord_Bot.Code_Support.Music;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Commands.Music
+﻿namespace Discord_Bot.Commands.Music
 {
+    using System.Threading.Tasks;
+    using Discord.Commands;
+    using Discord_Bot.Code_Support.Music;
 
-    public class queue : ModuleBase<SocketCommandContext>
+    public class Queue : ModuleBase<SocketCommandContext>
     {
-        [Command("Queue clear"), Summary("Clears the Queue for music"), Alias("Q C", "Q Clear", "Queue C")]
+        [Command("Queue clear")]
+        [Summary("Clears the Queue for music")]
+        [Alias("Q C", "Q Clear", "Queue C")]
         public async Task Clear(params string[] args)
         {
             if (args.Length == 0)
             {
-                Queue Q = new Queue(Context);
-                Q.Clear();
+                Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
+                q.Clear();
                 await Context.Channel.SendMessageAsync("I have cleared the queue.");
             }
             else if (args.Length == 1)

@@ -1,10 +1,10 @@
-﻿using FileTransferProtocalLibrary;
-using MetroFramework.Forms;
-using System;
-using System.Windows.Forms;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using System;
+    using System.Windows.Forms;
+    using FileTransferProtocalLibrary;
+    using MetroFramework.Forms;
+
     public partial class MainForm : MetroForm
     {
         public MainForm()
@@ -12,12 +12,12 @@ namespace Discord_Bot
             InitializeComponent();
         }
 
-        public void AddText(string Text, System.Drawing.Color Color)
+        public void AddText(string text, System.Drawing.Color color)
         {
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.SelectionLength = 0;
-            richTextBox1.SelectionColor = Color;
-            richTextBox1.AppendText(Text + Environment.NewLine);
+            richTextBox1.SelectionColor = color;
+            richTextBox1.AppendText(text + Environment.NewLine);
         }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)

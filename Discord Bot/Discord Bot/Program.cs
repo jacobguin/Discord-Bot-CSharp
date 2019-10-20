@@ -1,10 +1,10 @@
-﻿using Discord.Commands;
-using Discord.WebSocket;
-using System;
-using System.Windows.Forms;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using System;
+    using System.Windows.Forms;
+    using Discord.Commands;
+    using Discord.WebSocket;
+
     public static class Program
     {
         public static DiscordSocketClient Client;
@@ -12,7 +12,7 @@ namespace Discord_Bot
         public static MainForm MF;
 
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
