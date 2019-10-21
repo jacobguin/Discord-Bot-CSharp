@@ -13,7 +13,7 @@
         private static IAudioClient c;
         private static SocketCommandContext s;
 
-        public static async Task StartPlaying(IAudioClient client, SocketCommandContext context, IVoiceChannel channel, Queue q)
+        public static async Task StartPlaying(IAudioClient client, SocketCommandContext context, Queue q)
         {
             Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), true);
             s = context;

@@ -44,7 +44,7 @@
                             if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                             {
                                 Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
-                                await Playing.StartPlaying(await channel.ConnectAsync(), Context, channel, q);
+                                await Playing.StartPlaying(await channel.ConnectAsync(), Context, q);
                             }
                             else
                             {
@@ -210,7 +210,7 @@
                 if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
                 {
                     IAudioClient audioClient = await channel.ConnectAsync();
-                    _ = Playing.StartPlaying(audioClient, Context, channel, q);
+                    _ = Playing.StartPlaying(audioClient, Context, q);
                 }
                 else
                 {
