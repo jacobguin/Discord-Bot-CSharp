@@ -145,59 +145,66 @@
 
         private async Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
-
-            int num;
-            if (reaction.Emote.Name == emojiArr[0]) num = 1;
-            else if (reaction.Emote.Name == emojiArr[1]) num = 2;
-            else if (reaction.Emote.Name == emojiArr[2]) num = 3;
-            else if (reaction.Emote.Name == emojiArr[3]) num = 4;
-            else num = 5;
-
-            if (reaction.UserId == 508008523146199061) return;
-            IUserMessage msg = await message.DownloadAsync();
-            if (msg.Author.Id != 508008523146199061) return;
-            if (!emojiArr.Contains(reaction.Emote.Name)) return;
-            if (!msg.ToString().StartsWith("**Song Results:**")) return;
-            if (items.Count < num)
+            try
             {
-                await msg.Channel.SendMessageAsync("No result with that number found.");
-                return;
+                string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
+
+                int num;
+                if (reaction.Emote.Name == emojiArr[0]) num = 1;
+                else if (reaction.Emote.Name == emojiArr[1]) num = 2;
+                else if (reaction.Emote.Name == emojiArr[2]) num = 3;
+                else if (reaction.Emote.Name == emojiArr[3]) num = 4;
+                else num = 5;
+
+                if (reaction.UserId == 508008523146199061) return;
+                IUserMessage msg = await message.DownloadAsync();
+                if (msg.Author.Id != 508008523146199061) return;
+                if (!emojiArr.Contains(reaction.Emote.Name)) return;
+                if (!msg.ToString().StartsWith("**Song Results:**")) return;
+                if (items.Count < num)
+                {
+                    await msg.Channel.SendMessageAsync("No result with that number found.");
+                    return;
+                }
+
+                Context.Client.ReactionAdded -= Client_ReactionAdded;
+                await msg.DeleteAsync();
+                string id;
+                switch (reaction.Emote.Name)
+                {
+                    case "1⃣":
+                        id = items.First<dynamic>().id.videoId;
+                        success++;
+                        break;
+                    case "2⃣":
+                        id = items.Value<dynamic>(1).id.videoId;
+                        success++;
+                        break;
+                    case "3⃣":
+                        id = items.Value<dynamic>(2).id.videoId;
+                        success++;
+                        break;
+                    case "4⃣":
+                        id = items.Value<dynamic>(3).id.videoId;
+                        success++;
+                        break;
+                    case "5⃣":
+                        id = items.Last<dynamic>().id.videoId;
+                        success++;
+                        break;
+                    default:
+                        id = "this won't occur";
+                        break;
+                }
+
+                if (success != 0)
+                {
+                    _ = Start(id);
+                }
             }
-
-            Context.Client.ReactionAdded -= Client_ReactionAdded;
-            await msg.DeleteAsync();
-            string id;
-            switch (reaction.Emote.Name)
+            catch (Exception ex)
             {
-                case "1⃣":
-                    id = items.First<dynamic>().id.videoId;
-                    success++;
-                    break;
-                case "2⃣":
-                    id = items.Value<dynamic>(1).id.videoId;
-                    success++;
-                    break;
-                case "3⃣":
-                    id = items.Value<dynamic>(2).id.videoId;
-                    success++;
-                    break;
-                case "4⃣":
-                    id = items.Value<dynamic>(3).id.videoId;
-                    success++;
-                    break;
-                case "5⃣":
-                    id = items.Last<dynamic>().id.videoId;
-                    success++;
-                    break;
-                default:
-                    id = "this won't occur";
-                    break;
-            }
-
-            if (success != 0)
-            {
-                _ = Start(id);
+                await Utils.ReportError(Context, "play ReactionAdded", ex);
             }
         }
 
@@ -219,7 +226,7 @@
             }
             catch (Exception ex)
             {
-                await Utils.ReportError(Context, "play", ex);
+                await Utils.ReportError(Context, "play start", ex);
             }
         }
     }
