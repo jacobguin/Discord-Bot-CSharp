@@ -18,6 +18,12 @@
             {
                 Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
                 string desc = $"```markdown{Environment.NewLine}";
+                if (q.Items == null)
+                {
+                    await Context.Channel.SendMessageAsync("there is nothing in the queue");
+                    return;
+                }
+
                 for (int i = 0; i < q.Items.Length - 1; i++)
                 {
                     WebClient web = new WebClient();

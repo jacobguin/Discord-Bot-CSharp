@@ -76,7 +76,7 @@
                         WebClient webClient = new WebClient();
                         string value = webClient.DownloadString(url);
 
-                        JArray items = JsonConvert.DeserializeObject<dynamic>(value).items;
+                        items = JsonConvert.DeserializeObject<dynamic>(value).items;
 
                         if (items.Count == 0)
                         {
