@@ -16,9 +16,9 @@
 
     public class Play : ModuleBase<SocketCommandContext>
     {
+        private readonly string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
         private JArray items = null;
         private IVoiceChannel channel = null;
-        private int success = 0;
 
         [Command("Play", RunMode = RunMode.Async)]
         [Summary("Music")]
@@ -58,8 +58,6 @@
                         await Context.Channel.SendMessageAsync("There is already a message to select a song. Please select one in order to add more songs.");
                         return;
                     }
-
-                    string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
 
                     channel = channel ?? (Context.Message.Author as IGuildUser)?.VoiceChannel;
                     if (channel == null)
@@ -131,32 +129,20 @@
         {
             try
             {
-                string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
-                
-                int num;
-                for (int i = 0; i < 5; i++)
-                {
-                    if (reaction.Emote.Name == emojiArr[i])
-                    {
-                        num = i + 1;
-                        break;
-                    }
-                }
+                int num = Array.IndexOf(emojiArr, reaction.Emote.Name) + 1;
 
                 IUserMessage msg = await message.DownloadAsync();
-                if (reaction.UserId == 508008523146199061 && msg.Author.Id != 508008523146199061 && !emojiArr.Contains(reaction.Emote.Name) && !msg.ToString().StartsWith("**Song Results:**")) return;
-                if (items.Count < num)
+                if (reaction.UserId != 508008523146199061 && msg.Author.Id == 508008523146199061 && emojiArr.Contains(reaction.Emote.Name) && msg.ToString().StartsWith("**Song Results:**"))
                 {
-                    await msg.Channel.SendMessageAsync("No result with that number found.");
-                    return;
-                }
+                    if (items.Count < num)
+                    {
+                        await msg.Channel.SendMessageAsync("No result with that number found.");
+                        return;
+                    }
 
-                Context.Client.ReactionAdded -= Client_ReactionAdded;
-                await msg.DeleteAsync();
-                string id = items.Value<dynamic>(num - 1);
-
-                if (success != 0)
-                {
+                    Context.Client.ReactionAdded -= Client_ReactionAdded;
+                    await msg.DeleteAsync();
+                    string id = items.Value<dynamic>(num - 1).id.videoId;
                     _ = Start(id);
                 }
             }
