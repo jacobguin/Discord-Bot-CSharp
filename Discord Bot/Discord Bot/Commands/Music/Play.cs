@@ -132,19 +132,19 @@
             try
             {
                 string[] emojiArr = { "1⃣", "2⃣", "3⃣", "4⃣", "5⃣" };
-
+                
                 int num;
-                if (reaction.Emote.Name == emojiArr[0]) num = 1;
-                else if (reaction.Emote.Name == emojiArr[1]) num = 2;
-                else if (reaction.Emote.Name == emojiArr[2]) num = 3;
-                else if (reaction.Emote.Name == emojiArr[3]) num = 4;
-                else num = 5;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (reaction.Emote.Name == emojiArr[i])
+                    {
+                        num = i + 1;
+                        break;
+                    }
+                }
 
-                if (reaction.UserId == 508008523146199061) return;
                 IUserMessage msg = await message.DownloadAsync();
-                if (msg.Author.Id != 508008523146199061) return;
-                if (!emojiArr.Contains(reaction.Emote.Name)) return;
-                if (!msg.ToString().StartsWith("**Song Results:**")) return;
+                if (reaction.UserId == 508008523146199061 && msg.Author.Id != 508008523146199061 && !emojiArr.Contains(reaction.Emote.Name) && !msg.ToString().StartsWith("**Song Results:**")) return;
                 if (items.Count < num)
                 {
                     await msg.Channel.SendMessageAsync("No result with that number found.");
