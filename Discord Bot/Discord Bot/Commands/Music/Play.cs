@@ -39,17 +39,14 @@
                         {
                             await Context.Channel.SendMessageAsync("You must be in a voice channel.");
                         }
+                        else if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
+                        {
+                            Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
+                            await Playing.StartPlaying(await channel.ConnectAsync(), Context, q);
+                        }
                         else
                         {
-                            if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
-                            {
-                                Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
-                                await Playing.StartPlaying(await channel.ConnectAsync(), Context, q);
-                            }
-                            else
-                            {
-                                await Context.Channel.SendMessageAsync("The bot is already playing something.");
-                            }
+                            await Context.Channel.SendMessageAsync("The bot is already playing something.");
                         }
                     }
                 }
@@ -71,7 +68,7 @@
                     }
                     else
                     {
-                        string url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + Uri.EscapeUriString(string.Join(" ", search)) + "&key=" + Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube);
+                        string url = $"https://www.googleapis.com/youtube/v3/search?part=snippet&q={Uri.EscapeUriString(string.Join(" ", search))}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}";
 
                         WebClient webClient = new WebClient();
                         string value = webClient.DownloadString(url);
@@ -107,24 +104,11 @@
                                     }
                                 }
 
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 9 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 8 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 7 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 6 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 5 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 4 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 3 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 2 seconds!**"));
-                                await Task.Delay(1000);
-                                await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", "**This message will expire in 1 second!**"));
+                                for (int i = 0; i < 9; i++)
+                                {
+                                    await Task.Delay(1000);
+                                    await m.ModifyAsync(h => h.Content = msg.Replace("**This message will expire in 10 seconds!**", $"**This message will expire in {9 - i} seconds!**"));
+                                }
 
                                 await Task.Delay(1000);
                                 Context.Client.ReactionAdded -= Client_ReactionAdded;
@@ -169,33 +153,7 @@
 
                 Context.Client.ReactionAdded -= Client_ReactionAdded;
                 await msg.DeleteAsync();
-                string id;
-                switch (reaction.Emote.Name)
-                {
-                    case "1⃣":
-                        id = items.First<dynamic>().id.videoId;
-                        success++;
-                        break;
-                    case "2⃣":
-                        id = items.Value<dynamic>(1).id.videoId;
-                        success++;
-                        break;
-                    case "3⃣":
-                        id = items.Value<dynamic>(2).id.videoId;
-                        success++;
-                        break;
-                    case "4⃣":
-                        id = items.Value<dynamic>(3).id.videoId;
-                        success++;
-                        break;
-                    case "5⃣":
-                        id = items.Last<dynamic>().id.videoId;
-                        success++;
-                        break;
-                    default:
-                        id = "this won't occur";
-                        break;
-                }
+                string id = items.Value<dynamic>(num - 1);
 
                 if (success != 0)
                 {

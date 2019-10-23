@@ -49,6 +49,7 @@
                         q.Items[0].Remove();
                     }
                 }
+
                 await Stop(client, context);
             }
             catch (Exception ex)
@@ -73,12 +74,9 @@
         {
             try
             {
-                if (user.Id == 508008523146199061)
+                if (user.Id == 508008523146199061 && afterState.VoiceChannel == null)
                 {
-                    if (afterState.VoiceChannel == null)
-                    {
-                        await Stop(c, s);
-                    }
+                    await Stop(c, s);
                 }
                 else
                 {
@@ -115,10 +113,10 @@
                 EmbedBuilder e = new EmbedBuilder();
                 WebClient web = new WebClient();
                 string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={iD}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
-                e.Title = "Now Playing: " + '"' + Json.Parse(text, "items[0].snippet.title") + '"' + " : by: " + Json.Parse(text, "items[0].snippet.channelTitle");
-                e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"));
-                e.WithColor(255, 0, 0);
-                e.WithFooter($"https://www.youtube.com/watch?v={iD}");
+                e.Title = $"Now Playing: \"{Json.Parse(text, "items[0].snippet.title")}\": by: {Json.Parse(text, "items[0].snippet.channelTitle")}";
+                e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"))
+                 .WithColor(255, 0, 0)
+                 .WithFooter($"https://www.youtube.com/watch?v={iD}");
                 return e.Build();
             }
             catch (Exception ex)

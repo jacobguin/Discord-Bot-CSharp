@@ -94,37 +94,32 @@
                 {
                     return null;
                 }
-                else
-                {
-                    raw_ = raw_.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
-                    string[] raw = raw_.Split('|');
-                    Queue_Item[] output = new Queue_Item[raw.Count() - 2];
 
-                    for (int i = -1; i < raw.Count() - 2; i++)
+                raw_ = raw_.Replace("|yt|", "|yt").Replace("|playlist|", "|playlist");
+                string[] raw = raw_.Split('|');
+                Queue_Item[] output = new Queue_Item[raw.Count() - 2];
+
+                for (int i = -1; i < raw.Count() - 2; i++)
+                {
+                    if (i != -1 && i != raw.Count() - 2)
                     {
-                        if (i != -1)
+                        if (raw[i + 1].StartsWith("yt"))
                         {
-                            if (i != raw.Count() - 2)
-                            {
-                                if (raw[i + 1].StartsWith("yt"))
-                                {
-                                    output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""), context);
-                                }
-                                else if (raw[i + 1].StartsWith("playlist"))
-                                {
-                                    // Will not ocure Yet, this may change in the fucture.
-                                    output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""), context);
-                                }
-                                else
-                                {
-                                    output[i] = new Queue_Item(Type.End, null, context);
-                                }
-                            }
+                            output[i] = new Queue_Item(Type.Youtube, raw[i + 1].Replace("yt", ""), context);
+                        }
+                        else if (raw[i + 1].StartsWith("playlist"))
+                        {
+                            // Will not occur yet, this may change in the future.
+                            output[i] = new Queue_Item(Type.Playlist, raw[i + 1].Replace("playlist", ""), context);
+                        }
+                        else
+                        {
+                            output[i] = new Queue_Item(Type.End, null, context);
                         }
                     }
-
-                    return output;
                 }
+
+                return output;
             }
             catch (Exception ex)
             {
