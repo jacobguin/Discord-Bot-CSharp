@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using Discord;
     using Discord.Commands;
-    using Discord_Bot.Code_Support.Music;
 
     public class Queue_Clear : ModuleBase<SocketCommandContext>
     {

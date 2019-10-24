@@ -8,7 +8,7 @@
 
     public static class Backend
     {
-        private static AudioOutStream discord;
+        public static AudioOutStream Discord;
         private static Stream output;
 
         public static async Task SendUrlAsync(IAudioClient client, string url)
@@ -18,14 +18,14 @@
                 using (Process ffmpeg = YTStream(url))
                 {
                     output = ffmpeg.StandardOutput.BaseStream;
-                    discord = client.CreatePCMStream(AudioApplication.Mixed);
+                    Discord = client.CreatePCMStream(AudioApplication.Mixed);
                     try
                     {
-                        await output.CopyToAsync(discord);
+                        await output.CopyToAsync(Discord);
                     }
                     finally
                     {
-                        await discord.FlushAsync();
+                        await Discord.FlushAsync();
                     }
                 }
             }

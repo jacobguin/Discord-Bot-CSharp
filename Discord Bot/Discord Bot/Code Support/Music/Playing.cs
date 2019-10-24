@@ -2,7 +2,9 @@
 {
     using System;
     using System.Net;
+    using System.Threading;
     using System.Threading.Tasks;
+    using System.Timers;
     using Discord;
     using Discord.Audio;
     using Discord.Commands;
@@ -12,41 +14,47 @@
     {
         private static IAudioClient c;
         private static SocketCommandContext s;
+        private static System.Timers.Timer t;
+        private static Queue queue;
 
         public static async Task StartPlaying(IAudioClient client, SocketCommandContext context, Queue q)
         {
             try
             {
+                queue = q;
                 Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), true);
                 s = context;
                 c = client;
+                t = new System.Timers.Timer();
+                t.Elapsed += T_Elapsed;
+                t.Start();
                 Program.Client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
                 Program.Client.LoggedOut += Client_LoggedOut;
                 while (true)
                 {
-                    q.Refresh();
+                    queue.Refresh();
                     try
                     {
-                        if (q.Items[0].Type == Queue.Type.End)
+                        if (queue.Items[0].Type == Queue.Type.End)
                         {
                             await context.Channel.SendMessageAsync("I am done playing music");
-                            q.Clear();
+                            queue.Clear();
                             await Stop(client, context);
                             break;
                         }
-                        else if (q.Items[0].Type == Queue.Type.Youtube)
+                        else if (queue.Items[0].Type == Queue.Type.Youtube)
                         {
-                            await context.Channel.SendMessageAsync("", false, Youtube_video_embed(q.Items[0].YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
-                            await Backend.SendUrlAsync(client, q.Items[0].YtVideo.ID);
+                            await context.Channel.SendMessageAsync("", false, Youtube_video_embed(queue.Items[0].YtVideo.ID.Replace("https://www.youtube.com/watch?v=", "")));
+                            await Backend.SendUrlAsync(client, queue.Items[0].YtVideo.ID);
                         }
-                        else if (q.Items[0].Type == Queue.Type.Playlist)
+                        else if (queue.Items[0].Type == Queue.Type.Playlist)
                         {
                             // not here yet
                         }
                     }
                     finally
                     {
-                        q.Items[0].Remove();
+                        queue.Items[0].Remove();
                     }
                 }
 
@@ -55,6 +63,58 @@
             catch (Exception ex)
             {
                 throw new Exception("Something Went wrong in the [StartPlaying] Task", ex);
+            }
+        }
+
+        private static void T_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") != 0)
+                {
+                    double meat = PeopleInCall(s) / 2;
+                    if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") >= int.Parse(meat.ToString()))
+                    {
+                        Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "0");
+                        Skip();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something Went wrong in the [skip check] Timer", ex);
+            }
+        }
+
+        public static int PeopleInCall(SocketCommandContext context)
+        {
+            try
+            {
+                SocketVoiceChannel channel = context.Client.GetGuild(context.Guild.Id).GetUser(508008523146199061).VoiceChannel;
+                if (channel != null) return channel.Users.Count - 1;
+                else return -1;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something Went wrong in the [PeopleInCall] int", ex);
+            }
+        }
+
+        private static async Task Skip()
+        {
+            try
+            {
+                await Backend.Discord.ClearAsync(CancellationToken.None);
+                await Backend.Discord.FlushAsync();
+                Program.Client.UserVoiceStateUpdated -= Client_UserVoiceStateUpdated;
+                Program.Client.LoggedOut -= Client_LoggedOut;
+                queue.Items[0].Remove();
+                queue.Refresh();
+                await StartPlaying(c, s, queue);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something Went wrong in the [Skip] Task", ex);
             }
         }
 
@@ -98,6 +158,7 @@
             try
             {
                 Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), false);
+                t.Stop();
                 await client.StopAsync();
             }
             catch (Exception ex)
@@ -122,18 +183,6 @@
             catch (Exception ex)
             {
                 throw new Exception("Something Went wrong in the [Youtube_video_embed] Embed", ex);
-            }
-        }
-
-        private static int PeopleInCall(SocketCommandContext context)
-        {
-            try
-            {
-                return context.Client.GetGuild(context.Guild.Id).GetUser(508008523146199061).VoiceChannel.Users.Count - 1;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Something Went wrong in the [PeopleInCall] int", ex);
             }
         }
     }
