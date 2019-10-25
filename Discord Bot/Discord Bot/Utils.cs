@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
     using Discord;
     using Discord.Commands;
 
@@ -23,7 +24,7 @@
 
         public static async Task ReportError(SocketCommandContext context, string command, Exception error)
         {
-            Program.MF.AddText(error.Message, System.Drawing.Color.Red);
+            Program.MF.Invoke(new MethodInvoker(() => { Program.MF.AddText(error.Message, System.Drawing.Color.Red); }));
             EmbedBuilder embed = new EmbedBuilder()
              .WithTitle("Error")
              .WithColor(Color.DarkRed)

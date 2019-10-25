@@ -20,12 +20,12 @@
 
         public async Task BOT()
         {
-            Program.Client = new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug });
+            Program.Client = new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Verbose });
             Program.Commands = new CommandService(new CommandServiceConfig
             {
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Async,
-                LogLevel = LogSeverity.Debug,
+                LogLevel = LogSeverity.Verbose,
             });
 
             await Program.Commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);

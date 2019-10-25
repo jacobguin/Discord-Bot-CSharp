@@ -66,7 +66,7 @@
             }
         }
 
-        private static void T_Elapsed(object sender, ElapsedEventArgs e)
+        private static async void T_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
@@ -76,7 +76,7 @@
                     if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") >= int.Parse(meat.ToString()))
                     {
                         Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "0");
-                        Skip();
+                        await Skip();
                     }
                 }
             }
@@ -106,6 +106,7 @@
             {
                 await Backend.Discord.ClearAsync(CancellationToken.None);
                 await Backend.Discord.FlushAsync();
+                t.Stop();
                 Program.Client.UserVoiceStateUpdated -= Client_UserVoiceStateUpdated;
                 Program.Client.LoggedOut -= Client_LoggedOut;
                 queue.Items[0].Remove();

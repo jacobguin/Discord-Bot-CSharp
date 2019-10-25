@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
     using Discord.Commands;
     using Discord.WebSocket;
 
@@ -29,7 +30,7 @@
 
             if (!result.IsSuccess)
             {
-                Program.MF.AddText($"{DateTime.Now} at Commands] Something went wrong with a command  Text: {context.Message.Content} | Error: {result.ErrorReason}", System.Drawing.Color.DarkRed);
+                Program.MF.Invoke(new MethodInvoker(() => { Program.MF.AddText($"{DateTime.Now} at Commands] Something went wrong with a command  Text: {context.Message.Content} | Error: {result.ErrorReason}", System.Drawing.Color.DarkRed); }));
                 string err = result.ErrorReason;
                 if (err == "Unknown command.")
                 {
