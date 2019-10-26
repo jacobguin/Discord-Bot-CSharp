@@ -31,6 +31,7 @@
             }
             catch (Exception ex)
             {
+                if (!ex.Message.Contains("operation was canceled"))
                 throw new Exception("Something Went wrong in the [SendUrlAsync] Task", ex);
             }
         }

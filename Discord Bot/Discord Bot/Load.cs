@@ -25,7 +25,7 @@
             {
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Async,
-                LogLevel = LogSeverity.Verbose,
+                LogLevel = LogSeverity.Debug,
             });
 
             await Program.Commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);

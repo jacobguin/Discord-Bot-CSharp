@@ -54,6 +54,8 @@
                     }
                     finally
                     {
+                        queue.Refresh();
+                        if (queue.Items != null)
                         queue.Items[0].Remove();
                     }
                 }
@@ -109,9 +111,19 @@
                 t.Stop();
                 Program.Client.UserVoiceStateUpdated -= Client_UserVoiceStateUpdated;
                 Program.Client.LoggedOut -= Client_LoggedOut;
-                queue.Items[0].Remove();
                 queue.Refresh();
-                await StartPlaying(c, s, queue);
+                if (queue.Items[1].Type == Queue.Type.End)
+                {
+                    await s.Channel.SendMessageAsync("I am done playing music");
+                    queue.Clear();
+                    await Stop(c, s);
+                }
+                else
+                {
+                    queue.Items[0].Remove();
+                    queue.Refresh();
+                    await StartPlaying(c, s, queue);
+                }
             }
             catch (Exception ex)
             {
