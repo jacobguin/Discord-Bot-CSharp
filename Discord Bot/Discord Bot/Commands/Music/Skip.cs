@@ -17,7 +17,7 @@
                 {
                     int skips = Database.ReadInt("Music", "Server_ID", Context.Guild.Id.ToString(), "Skip");
                     Database.Update("Music", "Skip", "Server_ID", Context.Guild.Id.ToString(), (skips + 1).ToString());
-                    double meat = Playing.PeopleInCall(Context) / 2;
+                    double meat = Math.Round((double)Playing.PeopleInCall(Context) / 2, 1);
                     if ((skips + 1) >= meat)
                     {
                         await Context.Channel.SendMessageAsync("skiping the current song");

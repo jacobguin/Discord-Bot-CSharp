@@ -72,8 +72,8 @@
             {
                 if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") != 0)
                 {
-                    double meat = PeopleInCall(s) / 2;
-                    if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") >= int.Parse(meat.ToString()))
+                    double meat = Math.Round((double)PeopleInCall(s) / 2, 1);
+                    if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") >= Math.Round(meat, 0))
                     {
                         Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "0");
                         await Skip();
