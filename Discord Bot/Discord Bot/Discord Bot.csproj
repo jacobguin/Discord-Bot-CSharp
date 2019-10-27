@@ -278,35 +278,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="libsodium.dll.checksums">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="opus.dll.checksums">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Copy To Output\libsodium.dll.checksums" />
+    <None Include="Copy To Output\opus.dll.checksums" />
     <None Include="App.config" />
     <None Include="packages.config" />
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ffmpeg.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ffplay.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ffprobe.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libsodium.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="opus.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="youtube-dl.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Copy To Output\ffmpeg.exe" />
+    <Content Include="Copy To Output\ffplay.exe" />
+    <Content Include="Copy To Output\ffprobe.exe" />
+    <Content Include="Copy To Output\libsodium.dll" />
+    <Content Include="Copy To Output\opus.dll" />
+    <Content Include="Copy To Output\youtube-dl.exe" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Load.resx">

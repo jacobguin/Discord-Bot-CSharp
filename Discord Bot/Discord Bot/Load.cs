@@ -47,6 +47,13 @@
             string path = $"C:/Users/{Environment.UserName}/Documents/Bot.accdb";
             FTP ftp = new FTP($"ftp://{Hidden_Info.Ftp.Domain}/Jacob/Program%20Files/Bot/", Hidden_Info.Ftp.Username, Hidden_Info.Ftp.Password);
             File.Delete(path);
+            DirectoryInfo di = new DirectoryInfo(Application.StartupPath.Replace("\\bin\\Debug", "") + "\\Copy To Output\\");
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (File.Exists($"{Application.StartupPath}/{file.Name}")) File.Delete($"{Application.StartupPath}/{file.Name}");
+                file.CopyTo($"{Application.StartupPath}/{file.Name}");
+            }
+
             ftp.DownloadFile("Bot.accdb", path);
 
             Program.MF = new MainForm();
