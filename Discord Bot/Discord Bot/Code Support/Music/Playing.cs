@@ -26,7 +26,7 @@
                 s = context;
                 c = client;
                 t = new System.Timers.Timer();
-                t.Elapsed += T_Elapsed;
+                t.Elapsed += TElapsed;
                 t.Start();
                 Program.Client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
                 Program.Client.LoggedOut += Client_LoggedOut;
@@ -73,7 +73,21 @@
             }
         }
 
-        private static async void T_Elapsed(object sender, ElapsedEventArgs e)
+        public static int PeopleInCall(SocketCommandContext context)
+        {
+            try
+            {
+                SocketVoiceChannel channel = context.Client.GetGuild(context.Guild.Id).GetUser(Hidden_Info.Tokens.Id).VoiceChannel;
+                if (channel != null) return channel.Users.Count - 1;
+                else return -1;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something Went wrong in the [PeopleInCall] int", ex);
+            }
+        }
+
+        private static async void TElapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
@@ -90,20 +104,6 @@
             catch (Exception ex)
             {
                 throw new Exception("Something Went wrong in the [skip check] Timer", ex);
-            }
-        }
-
-        public static int PeopleInCall(SocketCommandContext context)
-        {
-            try
-            {
-                SocketVoiceChannel channel = context.Client.GetGuild(context.Guild.Id).GetUser(508008523146199061).VoiceChannel;
-                if (channel != null) return channel.Users.Count - 1;
-                else return -1;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Something Went wrong in the [PeopleInCall] int", ex);
             }
         }
 
@@ -152,7 +152,7 @@
         {
             try
             {
-                if (user.Id == 508008523146199061 && afterState.VoiceChannel == null)
+                if (user.Id == Hidden_Info.Tokens.Id && afterState.VoiceChannel == null)
                 {
                     await Stop(c, s);
                 }
@@ -185,17 +185,17 @@
             }
         }
 
-        private static Embed Youtube_video_embed(string iD)
+        private static Embed Youtube_video_embed(string id)
         {
             try
             {
                 EmbedBuilder e = new EmbedBuilder();
                 WebClient web = new WebClient();
-                string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={iD}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
+                string text = web.DownloadString($"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={id}&key={Uri.EscapeUriString(Hidden_Info.API_Keys.Youtube)}");
                 e.Title = $"Now Playing: \"{Json.Parse(text, "items[0].snippet.title")}\": by: {Json.Parse(text, "items[0].snippet.channelTitle")}";
                 e.WithThumbnailUrl(Json.Parse(text, "items[0].snippet.thumbnails.standard.url"))
                  .WithColor(255, 0, 0)
-                 .WithFooter($"https://www.youtube.com/watch?v={iD}");
+                 .WithFooter($"https://www.youtube.com/watch?v={id}");
                 return e.Build();
             }
             catch (Exception ex)

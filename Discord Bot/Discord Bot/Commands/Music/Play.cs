@@ -53,7 +53,7 @@
                 else
                 {
                     IEnumerable<IMessage> msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
-                    if (msgs.Where(m => m.Author.Id == 508008523146199061 && m.Content.StartsWith("**Song Results:**")).Count() > 0)
+                    if (msgs.Where(m => m.Author.Id == Hidden_Info.Tokens.Id && m.Content.StartsWith("**Song Results:**")).Count() > 0)
                     {
                         await Context.Channel.SendMessageAsync("There is already a message to select a song. Please select one in order to add more songs.");
                         return;
@@ -132,7 +132,7 @@
                 int num = Array.IndexOf(emojiArr, reaction.Emote.Name) + 1;
 
                 IUserMessage msg = await message.DownloadAsync();
-                if (reaction.UserId != 508008523146199061 && msg.Author.Id == 508008523146199061 && emojiArr.Contains(reaction.Emote.Name) && msg.ToString().StartsWith("**Song Results:**"))
+                if (reaction.UserId != Hidden_Info.Tokens.Id && msg.Author.Id == Hidden_Info.Tokens.Id && emojiArr.Contains(reaction.Emote.Name) && msg.ToString().StartsWith("**Song Results:**"))
                 {
                     if (items.Count < num)
                     {
