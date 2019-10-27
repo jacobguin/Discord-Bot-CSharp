@@ -5,9 +5,9 @@
     using System.Windows.Forms;
     using Discord;
 
-    public static class Log
+    public class Log
     {
-        public static void Load()
+        public Log()
         {
             Program.Client.Log += Client_Log;
         }

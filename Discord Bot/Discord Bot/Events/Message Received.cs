@@ -6,9 +6,9 @@
     using Discord.Commands;
     using Discord.WebSocket;
 
-    public static class Message_Received
+    public class Message_Received
     {
-        public static void Load()
+        public Message_Received()
         {
             Program.Client.MessageReceived += Client_MessageReceived;
         }

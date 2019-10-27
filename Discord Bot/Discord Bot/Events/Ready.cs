@@ -3,16 +3,16 @@
     using System.Threading.Tasks;
     using Discord;
 
-    public static class Ready
+    public class Ready
     {
-        public static void Load()
+        public Ready()
         {
             Program.Client.Ready += Client_Ready;
         }
 
         private static async Task Client_Ready()
         {
-            await Program.Client.SetGameAsync(Program.Client.Guilds.Count.ToString() + " Servers", null, ActivityType.Watching);
+            await Program.Client.SetGameAsync($"{Program.Client.Guilds.Count} {(Program.Client.Guilds.Count == 1 ? "Server" : "Servers")}", null, ActivityType.Watching);
         }
     }
 }
