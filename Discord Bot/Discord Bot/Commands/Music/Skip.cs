@@ -15,16 +15,26 @@
             {
                 if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == "True")
                 {
-                    int skips = Database.ReadInt("Music", "Server_ID", Context.Guild.Id.ToString(), "Skip");
-                    Database.Update("Music", "Skip", "Server_ID", Context.Guild.Id.ToString(), (skips + 1).ToString());
-                    double meat = Math.Round((double)Playing.PeopleInCall(Context) / 2, 1);
-                    if ((skips + 1) >= meat)
+                    string raw = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Skip");
+                    if (raw.Contains(Context.Message.Author.Id.ToString()))
                     {
-                        await Context.Channel.SendMessageAsync("skiping the current song");
+                        await Context.Channel.SendMessageAsync("you have already voted to skip.");
                     }
                     else
                     {
-                        await Context.Channel.SendMessageAsync($"You have voted to skip, you need {Math.Round(meat, 0) - (skips + 1)} more people to vote to skip");
+                        string[] people = raw.Split('|');
+                        int skips = people.Length - 1;
+                        Database.Update("Music", "Skip", "Server_ID", Context.Guild.Id.ToString(), $"{raw}{Context.Message.Author.Id}|".ToString());
+                        double meat = Math.Round((double)Playing.PeopleInCall(Context) / 2, 1);
+                        if ((skips + 1) >= meat)
+                        {
+                            await Context.Channel.SendMessageAsync("skiping the current song");
+                        }
+                        else
+                        {
+                            double amt = Math.Round(meat, 0) - (skips + 1);
+                            await Context.Channel.SendMessageAsync($"You have voted to skip, you need {amt} more {(amt == 1 ? "person" : "people")} to vote to skip");
+                        }
                     }
                 }
                 else

@@ -35,6 +35,7 @@
                     queue.Refresh();
                     try
                     {
+                        if (queue.Items == null) return;
                         if (queue.Items[0].Type == Queue.Type.End)
                         {
                             await context.Channel.SendMessageAsync("I am done playing music");
@@ -50,6 +51,10 @@
                         else if (queue.Items[0].Type == Queue.Type.Playlist)
                         {
                             // not here yet
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                     finally
@@ -72,12 +77,12 @@
         {
             try
             {
-                if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") != 0)
+                if (!string.IsNullOrEmpty(Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Skip")))
                 {
                     double meat = Math.Round((double)PeopleInCall(s) / 2, 1);
-                    if (Database.ReadInt("Music", "Server_ID", s.Guild.Id.ToString(), "Skip") >= Math.Round(meat, 0))
+                    if (Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Skip").Split('|').Length - 1 >= Math.Round(meat, 0))
                     {
-                        Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "0");
+                        Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "");
                         await Skip();
                     }
                 }
