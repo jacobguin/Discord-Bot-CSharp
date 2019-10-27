@@ -1,14 +1,15 @@
 ﻿namespace Discord_Bot
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Discord;
     using Discord.Commands;
     using Discord.WebSocket;
-    using Discord_Bot.Events;
     using FileTransferProtocalLibrary;
 
     public partial class Load : Form
@@ -30,9 +31,29 @@
 
             await Program.Commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);
 
-            new Message_Received();
-            new Ready();
-            new Log();
+            string nspace = "Discord_Bot.Events";
+
+            IEnumerable<Type> q = from t in Assembly.GetExecutingAssembly().GetTypes()
+                    where t.IsClass && !t.Name.Contains("__1") && !t.Name.Contains("DisplayClass") && t.Namespace == nspace
+                    select t;
+            try
+            {
+                foreach (Type @class in q.ToList())
+                {
+                    foreach (MethodInfo method in @class.GetMethods())
+                    {
+                        if (method.Name == "Run")
+                        {
+                            object c = Activator.CreateInstance(@class);
+                            method.Invoke(c, null);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.MF.AddText(ex.Message, System.Drawing.Color.Red);
+            }
 
             await Program.Client.LoginAsync(TokenType.Bot, Hidden_Info.Tokens.Bot);
             await Program.Client.StartAsync();

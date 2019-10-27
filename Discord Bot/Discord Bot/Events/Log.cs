@@ -7,12 +7,12 @@
 
     public class Log
     {
-        public Log()
+        public void Run()
         {
             Program.Client.Log += Client_Log;
         }
 
-        private static async Task Client_Log(LogMessage message)
+        private async Task Client_Log(LogMessage message)
         {
             try
             {

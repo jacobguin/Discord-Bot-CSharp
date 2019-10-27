@@ -8,7 +8,7 @@
 
     public class Message_Received
     {
-        public Message_Received()
+        public void Run()
         {
             Program.Client.MessageReceived += Client_MessageReceived;
         }

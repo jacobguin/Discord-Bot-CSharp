@@ -5,7 +5,7 @@
 
     public class Ready
     {
-        public Ready()
+        public void Run()
         {
             Program.Client.Ready += Client_Ready;
         }

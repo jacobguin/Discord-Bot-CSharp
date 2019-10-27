@@ -97,7 +97,7 @@
                                     if (current <= results)
                                     {
                                         current++;
-                                        var e = new Emoji(em);
+                                        Emoji e = new Emoji(em);
                                         await m.AddReactionAsync(e);
                                     }
                                 }
