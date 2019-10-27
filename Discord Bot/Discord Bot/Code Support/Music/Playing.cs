@@ -100,10 +100,19 @@
                         await Skip();
                     }
                 }
+
+                if (!string.IsNullOrEmpty(Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Stop")))
+                {
+                    double meat = Math.Round((double)PeopleInCall(s) / 2, 1);
+                    if (Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Stop").Split('|').Length - 1 >= Math.Round(meat, 0))
+                    {
+                        await Stop(c, s);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Something Went wrong in the [skip check] Timer", ex);
+                throw new Exception("Something Went wrong in the [skip and stop check] Timer", ex);
             }
         }
 
@@ -175,6 +184,8 @@
         {
             try
             {
+                Database.Update("Music", "Stop", "Server_ID", s.Guild.Id.ToString(), "");
+                Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "");
                 Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), false);
                 t.Stop();
                 await client.StopAsync();
