@@ -11,13 +11,13 @@
         public static string GetPrefix(SocketCommandContext context)
         {
             string id = $"{context.User.Id}{context.Guild.Id}";
-            if (!string.IsNullOrEmpty(Database.Read("Users", "ID", id, "Prefix")))
+            if (!string.IsNullOrEmpty(Database.Read<string>("users", "id", id, "prefix")))
             {
-                return Database.Read("Users", "ID", id, "Prefix");
+                return Database.Read<string>("users", "id", id, "prefix");
             }
             else
             {
-                Database.Write("Users", "ID", id);
+                Database.Insert("users", Database.CreateParameter("id", id), Database.CreateParameter("prefix", "?"));
                 return "?";
             }
         }
@@ -30,7 +30,7 @@
              .WithColor(Color.DarkRed)
              .WithDescription(error.Message)
              .WithFooter($"Error with the Command: {command}");
-            await (context.Client.GetChannel(544837859362996274) as ITextChannel).SendMessageAsync("", false, embed.Build());
+            await (context.Client.GetChannel(880582600513716267) as ITextChannel).SendMessageAsync("", false, embed.Build());
         }
     }
 }

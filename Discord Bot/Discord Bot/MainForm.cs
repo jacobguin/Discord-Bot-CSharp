@@ -2,7 +2,6 @@
 {
     using System;
     using System.Windows.Forms;
-    using FileTransferProtocalLibrary;
     using MetroFramework.Forms;
 
     public partial class MainForm : MetroForm
@@ -29,9 +28,6 @@
         private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             await Program.Client.LogoutAsync();
-            FTP ftp = new FTP($"ftp://{Hidden_Info.Ftp.Domain}/Jacob/Program%20Files/Bot/", Hidden_Info.Ftp.Username, Hidden_Info.Ftp.Password);
-            ftp.DeleteFile("Bot.accdb");
-            ftp.UploadFile("Bot.accdb", $"C:/Users/{Environment.UserName}/Documents/Bot.accdb");
             Application.Exit();
         }
     }

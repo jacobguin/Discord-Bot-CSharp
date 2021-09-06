@@ -28,7 +28,7 @@
                     }
                     else
                     {
-                        Database.Update("Users", "Prefix", "ID", $"{Context.User.Id}{Context.Guild.Id}", prefix[0]);
+                        Database.Update("users", "id", $"{Context.User.Id}{Context.Guild.Id}", Database.CreateParameter("Prefix", prefix[0]));
                         await Context.Channel.SendMessageAsync($"your prefix is now '{prefix[0]}'");
                     }
                 }

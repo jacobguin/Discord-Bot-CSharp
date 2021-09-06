@@ -34,7 +34,7 @@
         {
             try
             {
-                Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), "");
+                Database.Update("music", "server_id", Context.Guild.Id.ToString(), Database.CreateParameter("queue", ""));
                 Items = null;
             }
             catch (Exception ex)
@@ -49,19 +49,26 @@
             {
                 if (type == Type.Youtube)
                 {
-                    string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+                    string old = Database.Read<string>("music", "server_id", Context.Guild.Id.ToString(), "queue");
                     if (!string.IsNullOrEmpty(old))
                     {
-                        Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace("|End|", "") + $"|yt|{input}|End|");
+                        Database.Update("music", "server_id", Context.Guild.Id.ToString(), Database.CreateParameter("queue", old.Replace("|End|", "") + $"|yt|{input}|End|"));
                     }
                     else
                     {
-                        if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == null)
+                        try
                         {
-                            Database.Write("Music", "Server_ID", Context.Guild.Id.ToString());
+                            if (Database.Read<string>("music", "server_id", Context.Guild.Id.ToString(), "queue") == null)
+                            {
+                                Database.Insert("music", Database.CreateParameter("server_id", Context.Guild.Id.ToString()), Database.CreateParameter("queue", ""), Database.CreateParameter("playing", false), Database.CreateParameter("skip", ""), Database.CreateParameter("stop", ""));
+                            }
+                        }
+                        catch
+                        {
+                            Database.Insert("music", Database.CreateParameter("server_id", Context.Guild.Id.ToString()), Database.CreateParameter("queue", ""), Database.CreateParameter("playing", false), Database.CreateParameter("skip", ""), Database.CreateParameter("stop", ""));
                         }
 
-                        Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), $"|yt|{input}|End|");
+                        Database.Update("music", "server_id", Context.Guild.Id.ToString(), Database.CreateParameter("queue", $"|yt|{input}|End|"));
                     }
                 }
 
@@ -89,7 +96,7 @@
         {
             try
             {
-                string raw_ = Database.Read("Music", "Server_ID", context.Guild.Id.ToString(), "Queue");
+                string raw_ = Database.Read<string>("music", "server_id", context.Guild.Id.ToString(), "queue");
                 if (string.IsNullOrEmpty(raw_))
                 {
                     return null;
@@ -164,10 +171,10 @@
                 {
                     if (Type == Type.Youtube)
                     {
-                        string old = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue");
+                        string old = Database.Read<string>("music", "server_id", Context.Guild.Id.ToString(), "queue");
                         if (old.Contains("|yt|"))
                         {
-                            Database.Update("Music", "Queue", "Server_ID", Context.Guild.Id.ToString(), old.Replace($"|yt|{YtVideo.ID}", ""));
+                            Database.Update("music", "server_id", Context.Guild.Id.ToString(), Database.CreateParameter("queue", old.Replace($"|yt|{YtVideo.ID}", "")));
                         }
                     }
                     else if (Type == Type.Playlist)

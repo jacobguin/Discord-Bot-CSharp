@@ -13,9 +13,9 @@
         {
             try
             {
-                if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") == "True")
+                if (Database.Read<bool>("music", "server_id", Context.Guild.Id.ToString(), "playing"))
                 {
-                    string raw = Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Skip");
+                    string raw = Database.Read<string>("music", "server_id", Context.Guild.Id.ToString(), "skip");
                     if (raw.Contains(Context.Message.Author.Id.ToString()))
                     {
                         await Context.Channel.SendMessageAsync("you have already voted to skip.");
@@ -24,7 +24,7 @@
                     {
                         string[] people = raw.Split('|');
                         int skips = people.Length - 1;
-                        Database.Update("Music", "Skip", "Server_ID", Context.Guild.Id.ToString(), $"{raw}{Context.Message.Author.Id}|".ToString());
+                        Database.Update("music", "server_id", Context.Guild.Id.ToString(), Database.CreateParameter("skip", $"{raw}{Context.Message.Author.Id}|".ToString()));
                         double meat = Math.Round((double)Playing.PeopleInCall(Context) / 2, 1);
                         if ((skips + 1) >= meat)
                         {

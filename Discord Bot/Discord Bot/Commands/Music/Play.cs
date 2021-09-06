@@ -28,7 +28,7 @@
             {
                 if (search.Length == 0)
                 {
-                    if (string.IsNullOrEmpty(Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Queue")))
+                    if (string.IsNullOrEmpty(Database.Read<string>("music", "server_id", Context.Guild.Id.ToString(), "queue")))
                     {
                         await Context.Channel.SendMessageAsync("Nothing's in the queue. Please provide a song.");
                     }
@@ -39,7 +39,7 @@
                         {
                             await Context.Channel.SendMessageAsync("You must be in a voice channel.");
                         }
-                        else if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
+                        else if (!Database.Read<bool>("music", "server_id", Context.Guild.Id.ToString(), "playing"))
                         {
                             Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
                             await Playing.StartPlaying(await channel.ConnectAsync(), Context, q);
@@ -132,6 +132,7 @@
                 int num = Array.IndexOf(emojiArr, reaction.Emote.Name) + 1;
 
                 IUserMessage msg = await message.DownloadAsync();
+                if (msg == null) return;
                 if (reaction.UserId != Hidden_Info.Tokens.Id && msg.Author.Id == Hidden_Info.Tokens.Id && emojiArr.Contains(reaction.Emote.Name) && msg.ToString().StartsWith("**Song Results:**"))
                 {
                     if (items.Count < num)
@@ -158,7 +159,7 @@
             {
                 Code_Support.Music.Queue q = new Code_Support.Music.Queue(Context);
                 q.Add(Code_Support.Music.Queue.Type.Youtube, id);
-                if (Database.Read("Music", "Server_ID", Context.Guild.Id.ToString(), "Playing") != "True")
+                if (!Database.Read<bool>("music", "server_id", Context.Guild.Id.ToString(), "playing"))
                 {
                     IAudioClient audioClient = await channel.ConnectAsync();
                     _ = Playing.StartPlaying(audioClient, Context, q);

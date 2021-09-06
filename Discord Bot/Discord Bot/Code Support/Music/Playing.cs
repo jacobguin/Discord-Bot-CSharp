@@ -22,7 +22,7 @@
             try
             {
                 queue = q;
-                Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), true);
+                Database.Update("music", "server_id", context.Guild.Id.ToString(), Database.CreateParameter("playing", true));
                 s = context;
                 c = client;
                 t = new System.Timers.Timer();
@@ -91,20 +91,20 @@
         {
             try
             {
-                if (!string.IsNullOrEmpty(Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Skip")))
+                if (!string.IsNullOrEmpty(Database.Read<string>("music", "server_id", s.Guild.Id.ToString(), "skip")))
                 {
                     double meat = Math.Round((double)PeopleInCall(s) / 2, 1);
-                    if (Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Skip").Split('|').Length - 1 >= Math.Round(meat, 0))
+                    if (Database.Read<string>("music", "server_id", s.Guild.Id.ToString(), "skip").Split('|').Length - 1 >= Math.Round(meat, 0))
                     {
-                        Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "");
+                        Database.Update("music", "server_id", s.Guild.Id.ToString(), Database.CreateParameter("skip", ""));
                         await Skip();
                     }
                 }
 
-                if (!string.IsNullOrEmpty(Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Stop")))
+                if (!string.IsNullOrEmpty(Database.Read<string>("music", "server_id", s.Guild.Id.ToString(), "stop")))
                 {
                     double meat = Math.Round((double)PeopleInCall(s) / 2, 1);
-                    if (Database.Read("Music", "Server_ID", s.Guild.Id.ToString(), "Stop").Split('|').Length - 1 >= Math.Round(meat, 0))
+                    if (Database.Read<string>("music", "server_id", s.Guild.Id.ToString(), "stop").Split('|').Length - 1 >= Math.Round(meat, 0))
                     {
                         await Stop(c, s);
                     }
@@ -184,9 +184,9 @@
         {
             try
             {
-                Database.Update("Music", "Stop", "Server_ID", s.Guild.Id.ToString(), "");
-                Database.Update("Music", "Skip", "Server_ID", s.Guild.Id.ToString(), "");
-                Database.Update("Music", "Playing", "Server_ID", context.Guild.Id.ToString(), false);
+                Database.Update("music", "server_id", s.Guild.Id.ToString(), Database.CreateParameter("stop", ""));
+                Database.Update("music", "server_id", s.Guild.Id.ToString(), Database.CreateParameter("skip", ""));
+                Database.Update("music", "server_id", context.Guild.Id.ToString(), Database.CreateParameter("playing", false));
                 t.Stop();
                 await client.StopAsync();
             }

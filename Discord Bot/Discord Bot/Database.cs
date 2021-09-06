@@ -1,8 +1,147 @@
 ﻿namespace Discord_Bot
 {
     using System;
-    using System.Data.OleDb;
+    using Npgsql;
 
+    public class Database
+    {
+        public static string ConectionString = $"SSL Mode=Disable;Persist Security Info=True;Password={Hidden_Info.Database.PW};Username={Hidden_Info.Database.ROLE};Database={Hidden_Info.Database.DB};Host={Hidden_Info.Database.IP}";
+
+        private static NpgsqlConnection RowReader = new NpgsqlConnection(ConectionString);
+        private static bool open = false;
+
+        private static void Open()
+        {
+            if (!open)
+            {
+                open = true;
+                RowReader.Open();
+            }
+        }
+
+        public static NpgsqlParameter CreateParameter(string name, object value)
+        {
+            return new NpgsqlParameter(name, value);
+        }
+
+        public static void Insert(string table, params NpgsqlParameter[] Parameters)
+        {
+            using (NpgsqlConnection con = new NpgsqlConnection(ConectionString))
+            {
+                con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = con;
+                    string vals = "";
+                    foreach (NpgsqlParameter param in Parameters)
+                    {
+                        vals += "@" + param.ParameterName + ", ";
+                        cmd.Parameters.Add(param);
+                    }
+
+                    vals = vals.Remove(vals.Length - 2, 2);
+                    cmd.CommandText = $"INSERT INTO {table} ({vals.Replace("@", "")}) VALUES({vals})";
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+                }
+
+                con.Close();
+            }
+        }
+
+        public static NpgsqlConnection CreateConnection()
+        {
+            return new NpgsqlConnection(ConectionString);
+        }
+
+        [Obsolete("removing")]
+        public static NpgsqlCommand ReadRow(string command)
+        {
+            Open();
+            NpgsqlCommand cmd = new NpgsqlCommand();
+            cmd.Connection = RowReader;
+            cmd.CommandText = command;
+            return cmd;
+        }
+
+        public static void Update(string table, string condiction_column, string condiction_value, params NpgsqlParameter[] Parameters)
+        {
+            using (NpgsqlConnection con = new NpgsqlConnection(ConectionString))
+            {
+                con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = con;
+                    string vals = "";
+                    foreach (NpgsqlParameter param in Parameters)
+                    {
+                        vals += param.ParameterName + " = @" + param.ParameterName + ", ";
+                        cmd.Parameters.Add(param);
+                    }
+                    vals = vals.Remove(vals.Length - 2, 2);
+                    cmd.CommandText = $"UPDATE {table} SET {vals} WHERE {condiction_column} = '{condiction_value}';";
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+        }
+
+        public static T Read<T>(string table, string condiction_column, string condiction_value, string returned_column)
+        {
+            return Read<T>($"SELECT {returned_column} FROM {table} WHERE {condiction_column} = '{condiction_value}';");
+        }
+
+        public static T Read<T>(string command)
+        {
+            using (NpgsqlConnection con = new NpgsqlConnection(ConectionString))
+            {
+                con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = command;
+                    try
+                    {
+                        if (cmd.ExecuteScalar() is DBNull)
+                        {
+                            con.Close();
+                            return (T)("" as object);
+                        }
+                        else
+                        {
+#pragma warning disable CS8603 // Dereference of a possibly null reference.
+                            T bob = (T)cmd.ExecuteScalar();
+                            con.Close();
+                            return bob;
+#pragma warning restore CS8603 // Dereference of a possibly null reference.
+                        }
+                    }
+                    catch
+                    {
+                        return (T)("" as object);
+                    }
+                }
+            }
+        }
+
+        public static void ExecuteNonQuery(string command)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(ConectionString))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = command;
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+    }
+
+    /*
     public static class Database
     {
         private static readonly string FilePath = $"C:/Users/{Environment.UserName}/Documents/Bot.accdb";
@@ -200,5 +339,5 @@
             command.ExecuteNonQuery();
             connection.Close();
         }
-    }
+    }*/
 }
